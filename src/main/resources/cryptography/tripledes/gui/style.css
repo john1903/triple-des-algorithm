@@ -1,0 +1,38 @@
+.title-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.info-label {
+    -fx-font-size: 14px;
+}
+
+.action-button {
+    -fx-font-size: 14px;
+    -fx-background-color: #4CAF50; /* Zielony */
+    -fx-text-fill: white;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.action-button:hover {
+    -fx-background-color: #45a049; /* Zielony - ciemniejszy */
+}
+
+.status-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: red;
+}
+
+.text-field {
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.text-field-error {
+    -fx-background-color: #ffcccc; /* Czerwony */
+}

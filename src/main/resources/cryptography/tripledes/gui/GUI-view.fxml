@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="350.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cryptography.tripledes.gui.GUIController">
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+    </padding>
+
+    <Label styleClass="title-label" text="File Encryption and Decryption" />
+
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="encryptButton" onAction="#encryptFile" styleClass="action-button" text="Encrypt File" />
+        <Button fx:id="decryptButton" onAction="#decryptFile" styleClass="action-button" text="Decrypt File" />
+    </HBox>
+
+    <VBox alignment="CENTER" spacing="10">
+        <Label styleClass="info-label" text="Enter file path for processing:" />
+        <TextField fx:id="filePathTextField" promptText="Enter file path" styleClass="text-field" />
+    </VBox>
+
+    <VBox alignment="CENTER" spacing="10">
+        <Label styleClass="info-label" text="Enter key file path or destination path:" />
+        <TextField fx:id="keyPathTextField" promptText="Enter key file path or destination path" styleClass="text-field" />
+    </VBox>
+
+    <Button fx:id="generateKeysButton" onAction="#generateKeys" styleClass="action-button" text="Generate Keys" />
+
+    <Label fx:id="statusLabel" styleClass="status-label" />
+</VBox>
