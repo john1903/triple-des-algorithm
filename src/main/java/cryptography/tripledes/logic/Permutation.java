@@ -12,6 +12,17 @@ public class Permutation {
             {63, 55, 47, 39, 31, 23, 15, 7}
     };
 
+    int[][] finalPermutationTable = {
+            {40, 8, 48, 16, 56, 24, 64, 32},
+            {39, 7, 47, 15, 55, 23, 63, 31},
+            {38, 6, 46, 14, 54, 22, 62, 30},
+            {37, 5, 45, 13, 53, 21, 61, 29},
+            {36, 4, 44, 12, 52, 20, 60, 28},
+            {35, 3, 43, 11, 51, 19, 59, 27},
+            {34, 2, 42, 10, 50, 18, 58, 26},
+            {33, 1, 41, 9, 49, 17, 57, 25}
+    };
+
     public byte[][] initialPermutation(String input) {
         byte[] bits = stringToBits(input);
         byte[] bitSet = new byte[64];
@@ -31,6 +42,25 @@ public class Permutation {
             right[i] = bitSet[i + 32];
         }
         return new byte[][]{left, right};
+    }
+
+    public byte[] finalPermutation(byte[] left, byte[] right) {
+        byte[] bitSet = new byte[64];
+        for (int i = 0; i < 32; i++) {
+            bitSet[i] = left[i];
+            bitSet[i + 32] = right[i];
+        }
+        byte[] bits = new byte[64];
+        for (int i = 0; i < finalPermutationTable.length; i++) {
+            for (int j = 0; j < finalPermutationTable[i].length; j++) {
+                if (bitSet[i * 8 + j] == 1) {
+                    bits[finalPermutationTable[i][j] - 1] = 1;
+                } else {
+                    bits[finalPermutationTable[i][j] - 1] = 0;
+                }
+            }
+        }
+        return bits;
     }
 
     private byte[] stringToBits(String input) {
