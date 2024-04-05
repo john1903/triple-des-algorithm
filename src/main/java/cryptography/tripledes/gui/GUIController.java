@@ -1,17 +1,69 @@
 package cryptography.tripledes.gui;
 
+import cryptography.tripledes.dao.KeyReader;
+import cryptography.tripledes.managers.KeyManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
 import javafx.util.Duration;
+
+import java.io.File;
 
 public class GUIController {
     @FXML
     private TextField filePathTextField;
     @FXML
     private TextField keyPathTextField;
+    private KeyManager keyManager;
+
+    @FXML
+    public void initialize() {
+        keyManager = new KeyManager(new KeyReader());
+    }
+
+    @FXML
+    public void onDragOverFilePath(DragEvent event) {
+        if (event.getGestureSource() != filePathTextField && event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+
+    @FXML
+    public void onDragDroppedFilePath(DragEvent event) {
+        boolean success = false;
+        if (event.getGestureSource() != filePathTextField && event.getDragboard().hasFiles()) {
+            File file = event.getDragboard().getFiles().getFirst();
+            filePathTextField.setText(file.getAbsolutePath());
+            success = true;
+        }
+        event.setDropCompleted(success);
+        event.consume();
+    }
+
+    @FXML
+    public void onDragOverKeyPath(DragEvent event) {
+        if (event.getGestureSource() != keyPathTextField && event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+
+    @FXML
+    public void onDragDroppedKeyPath(DragEvent event) {
+        boolean success = false;
+        if (event.getGestureSource() != keyPathTextField && event.getDragboard().hasFiles()) {
+            File file = event.getDragboard().getFiles().getFirst();
+            keyPathTextField.setText(file.getAbsolutePath());
+            success = true;
+        }
+        event.setDropCompleted(success);
+        event.consume();
+    }
 
     private boolean validateTextField(TextField textField, String promptText) {
         if (textField.getText().isEmpty()) {
@@ -63,6 +115,12 @@ public class GUIController {
         if (validateTextField(keyPathTextField, "Enter key file path or destination path")) {
             return;
         }
-        showMessage("Generating keys...");
+        try {
+            keyManager.generateKeys(keyPathTextField.getText());
+        } catch (Exception e) {
+            showMessage("Error generating keys: " + e.getMessage());
+            return;
+        }
+        showMessage("Generating keys successful!");
     }
 }

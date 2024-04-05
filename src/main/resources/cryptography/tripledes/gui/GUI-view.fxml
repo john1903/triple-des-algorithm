@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="350.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cryptography.tripledes.gui.GUIController">
+<VBox alignment="CENTER" prefHeight="350.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cryptography.tripledes.gui.GUIController">
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
@@ -20,13 +20,13 @@
     </HBox>
 
     <VBox alignment="CENTER" spacing="10">
-        <Label styleClass="info-label" text="Enter file path for processing:" />
-        <TextField fx:id="filePathTextField" promptText="Enter file path" styleClass="text-field" />
+        <Label styleClass="info-label" text="Enter file path:" />
+        <TextField fx:id="filePathTextField" promptText="Enter file path" styleClass="text-field" onDragOver="#onDragOverFilePath" onDragDropped="#onDragDroppedFilePath" />
     </VBox>
 
     <VBox alignment="CENTER" spacing="10">
         <Label styleClass="info-label" text="Enter key file path or destination path:" />
-        <TextField fx:id="keyPathTextField" promptText="Enter key file path or destination path" styleClass="text-field" />
+        <TextField fx:id="keyPathTextField" promptText="Enter key file path or destination path" styleClass="text-field" onDragOver="#onDragOverKeyPath" onDragDropped="#onDragDroppedKeyPath" />
     </VBox>
 
     <Button fx:id="generateKeysButton" onAction="#generateKeys" styleClass="action-button" text="Generate Keys" />
