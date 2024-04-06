@@ -31,4 +31,11 @@ public class Transformations {
         }
         return shiftedBits;
     }
+
+    public static byte[] arrayCombine(byte[] array1, byte[] array2) {
+        byte[] combinedArray = new byte[array1.length + array2.length];
+        System.arraycopy(array1, 0, combinedArray, 0, array1.length);
+        System.arraycopy(array2, 0, combinedArray, array1.length, array2.length);
+        return combinedArray;
+    }
 }
