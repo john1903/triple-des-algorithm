@@ -2,8 +2,6 @@ package cryptography.tripledes.logic;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PermutationsTest {
@@ -29,15 +27,33 @@ class PermutationsTest {
             {33, 1, 41, 9, 49, 17, 57, 25}
     };
 
-    private static final int[][] permutedChoice2Table = {
-            {12, 45, 23, 6, 2, 41, 35, 19},
-            {33, 9, 14, 28, 42, 5, 18, 31},
-            {26, 16, 11, 3, 38, 29, 21, 44},
-            {36, 10, 4, 30, 8, 15, 43, 20},
-            {13, 7, 37, 25, 34, 22, 1, 46},
-            {17, 27, 40, 32, 39, 24, 47, 48}
+    private static final int[][] permutedChoice1Table = {
+            {57, 49, 41, 33, 25, 17, 9, 1},
+            {58, 50, 42, 34, 26, 18, 10, 2},
+            {59, 51, 43, 35, 27, 19, 1, 3},
+            {60, 52, 44, 36, 63, 55, 47, 39},
+            {31, 23, 15, 7, 62, 54, 46, 38},
+            {30, 22, 14, 6, 61, 53, 45, 37},
+            {29, 21, 13, 5, 28, 20, 12, 4}
     };
 
+    private static final int[][] permutedChoice2Table = {
+            {14, 17, 11, 24, 1, 5, 3, 28},
+            {15, 6, 21, 10, 23, 19, 12, 4},
+            {26, 8, 16, 7, 27, 20, 13, 2},
+            {41, 52, 31, 37, 47, 55, 30, 40},
+            {51, 45, 33, 48, 44, 49, 39, 56},
+            {34, 53, 46, 42, 50, 36, 29, 32}
+    };
+
+    private static final int[][] expansionTable = {
+            {32, 1, 2, 3, 4, 5, 4, 5},
+            {6, 7, 8, 9, 8, 9, 10, 11},
+            {12, 13, 12, 13, 14, 15, 16, 17},
+            {16, 17, 18, 19, 20, 21, 20, 21},
+            {22, 23, 24, 25, 24, 25, 26, 27},
+            {28, 29, 28, 29, 30, 31, 32, 1}
+    };
     @Test
     void initialPermutation() {
         String string = "01234567";
@@ -64,7 +80,7 @@ class PermutationsTest {
 
     @Test
     void finalPermutation() {
-        String string = "01234567";
+        String string = "0123";
         byte[] left = Transformations.stringToBits(string);
         byte[] right = Transformations.stringToBits(string);
         byte[] output = Permutations.finalPermutation(left, right);
@@ -87,12 +103,13 @@ class PermutationsTest {
     }
 
     @Test
-    void permutedChoice1() {
+    void permutedChoice1Test1() {
         byte[] key = new byte[64];
         for (int i = 0; i < 64; i++) {
-            key[i] = (byte) (1);
             if (i % 8 == 7) {
                 key[i] = (byte) (0);
+            } else {
+                key[i] = (byte) (1);
             }
         }
         byte[][] bits = Permutations.permutedChoice1(key);
@@ -106,20 +123,50 @@ class PermutationsTest {
     }
 
     @Test
-    void permutedChoice2Test1() {
-        byte[] key = new byte[56];
-        for (int i = 0; i < 56; i++) {
-            if (i % 7 == 6) {
-                key[i] = (byte) (0);
-            } else {
-                key[i] = (byte) (1);
+    void permutedChoice1Test2() {
+        byte[] key = Transformations.stringToBits("01234567");
+        byte[][] permuted = Permutations.permutedChoice1(key);
+        int index;
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 8; j++) {
+                index = i * 8 + j;
+                if (index < 28) {
+                    assertEquals(key[permutedChoice1Table[i][j] - 1], permuted[0][index]);
+                } else {
+                    index = (i * 8 + j) % 28;
+                    assertEquals(key[permutedChoice1Table[i][j] - 1], permuted[1][index]);
+                }
             }
         }
+    }
+
+    @Test
+    void permutedChoice2Test() {
+        String keyString = "0123456";
+        byte[] key = Transformations.stringToBits(keyString);
         byte[] bits = Permutations.permutedChoice2(key);
         assertNotNull(bits);
         assertEquals(48, bits.length);
-        for (int i = 0; i < 48; i++) {
-            assertEquals(1, bits[i]);
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                int expectedIndex = permutedChoice2Table[i][j] - 1;
+                assertEquals(key[expectedIndex], bits[i * 8 + j]);
+            }
         }
     }
+
+    @Test
+    void expansionPermutation() {
+        String plainString = "1234";
+        byte[] plainT = Transformations.stringToBits(plainString);
+        byte[] expandedBits = Permutations.expansionPermutation(plainT);
+        assertEquals(48, expandedBits.length);
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                int expectedIndex = expansionTable[i][j] - 1;
+                assertEquals(plainT[expectedIndex], expandedBits[i * 8 + j]);
+            }
+        }
+    }
+
 }
