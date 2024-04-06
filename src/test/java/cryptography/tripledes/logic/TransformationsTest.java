@@ -1,18 +1,10 @@
 package cryptography.tripledes.logic;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TransformationsTest {
-    Transformations transformations;
-
-    @BeforeEach
-    void setUp() {
-        transformations = new Transformations();
-    }
-
     @Test
     void key8Transformation() {
         byte[] key = new byte[64];
@@ -22,11 +14,13 @@ class TransformationsTest {
                 key[i] = (byte) (0);
             }
         }
-        byte[] bits = transformations.key8Transformation(key);
+        byte[][] bits = Transformations.key8Transformation(key);
         assertNotNull(bits);
-        assertEquals(56, bits.length);
-        for (int i = 0; i < 56; i++) {
-            assertEquals(1, bits[i]);
+        assertEquals(28, bits[0].length);
+        assertEquals(28, bits[1].length);
+        for (int i = 0; i < 28; i++) {
+            assertEquals(1, bits[0][i]);
+            assertEquals(1, bits[1][i]);
         }
     }
 }
