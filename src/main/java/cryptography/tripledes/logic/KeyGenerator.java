@@ -24,7 +24,7 @@ public class KeyGenerator {
 
     public static String generateKey() {
         StringBuilder key = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 16; i++) {
             key.append(Integer.toHexString((int) (Math.random() * 16)));
         }
         return key.toString();

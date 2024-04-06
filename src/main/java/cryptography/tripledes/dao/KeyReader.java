@@ -3,8 +3,7 @@ package cryptography.tripledes.dao;
 import java.io.*;
 import java.util.ArrayList;
 
-public class KeyReader implements KeyReaderInterface {
-    @Override
+public class KeyReader {
     public String[] readKeys(String path) throws IOException {
         String[] keys = new String[3];
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
@@ -20,8 +19,7 @@ public class KeyReader implements KeyReaderInterface {
         return keys;
     }
 
-    @Override
-    public void writeKeys(String path, ArrayList<String> keys) throws IOException {
+    public void writeKeys(String path, String[] keys) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path)))) {
             for (String key : keys) {
                 writer.write(key);

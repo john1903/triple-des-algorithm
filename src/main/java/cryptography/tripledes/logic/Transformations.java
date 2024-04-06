@@ -1,7 +1,7 @@
 package cryptography.tripledes.logic;
 
 public class Transformations {
-    public byte[] key8Transformation(byte[] key) {
+    public static byte[] key8Transformation(byte[] key) {
         byte[] bits = new byte[56];
         int index = 0;
         for (int i = 0; i < 64; i++) {

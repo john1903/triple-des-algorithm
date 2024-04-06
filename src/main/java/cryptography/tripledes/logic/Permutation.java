@@ -1,7 +1,7 @@
 package cryptography.tripledes.logic;
 
 public class Permutation {
-    int[][] initialPermutationTable = {
+    private static final int[][] initialPermutationTable = {
             {58, 50, 42, 34, 26, 18, 10, 2},
             {60, 52, 44, 36, 28, 20, 12, 4},
             {62, 54, 46, 38, 30, 22, 14, 6},
@@ -12,7 +12,7 @@ public class Permutation {
             {63, 55, 47, 39, 31, 23, 15, 7}
     };
 
-    int[][] finalPermutationTable = {
+    private static final int[][] finalPermutationTable = {
             {40, 8, 48, 16, 56, 24, 64, 32},
             {39, 7, 47, 15, 55, 23, 63, 31},
             {38, 6, 46, 14, 54, 22, 62, 30},
@@ -23,12 +23,11 @@ public class Permutation {
             {33, 1, 41, 9, 49, 17, 57, 25}
     };
 
-    public byte[][] initialPermutation(String input) {
-        byte[] bits = stringToBits(input);
+    public static byte[][] initialPermutation(byte[] input) {
         byte[] bitSet = new byte[64];
         for (int i = 0; i < initialPermutationTable.length; i++) {
             for (int j = 0; j < initialPermutationTable[i].length; j++) {
-                if (bits[i * 8 + j] == 1) {
+                if (input[i * 8 + j] == 1) {
                     bitSet[initialPermutationTable[i][j] - 1] = 1;
                 } else {
                     bitSet[initialPermutationTable[i][j] - 1] = 0;
@@ -44,7 +43,8 @@ public class Permutation {
         return new byte[][]{left, right};
     }
 
-    public byte[] finalPermutation(byte[] left, byte[] right) {
+
+    public static byte[] finalPermutation(byte[] left, byte[] right) {
         byte[] bitSet = new byte[64];
         for (int i = 0; i < 32; i++) {
             bitSet[i] = left[i];
@@ -63,7 +63,7 @@ public class Permutation {
         return bits;
     }
 
-    private byte[] stringToBits(String input) {
+    public static byte[] stringToBits(String input) {
         byte[] bits = new byte[input.length() * 8];
         for (int i = 0; i < input.length(); i++) {
             String charBits = Integer.toBinaryString(input.charAt(i));

@@ -4,7 +4,8 @@ import cryptography.tripledes.dao.KeyReader;
 import cryptography.tripledes.logic.KeyGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
+import static cryptography.tripledes.logic.KeyGenerator.hexStringToBits;
 
 public class KeyManager {
     KeyReader keyReader;
@@ -14,14 +15,19 @@ public class KeyManager {
     }
 
     public void generateKeys(String path) throws IOException {
-        ArrayList<String> keys = new ArrayList<>();
+        String[] keys = new String[3];
         for (int i = 0; i < 3; i++) {
-            keys.add(KeyGenerator.generateKey());
+            keys[i] = KeyGenerator.generateKey();
         }
         keyReader.writeKeys(path, keys);
     }
 
-    public byte[] readKeys(String path, int keyIndex) throws IOException {
-        return KeyGenerator.hexStringToBits(keyReader.readKeys(path)[keyIndex]);
+    public byte[][] readKeys(String path) throws IOException {
+        byte[][] keys = new byte[3][];
+        String[] keyStrings = keyReader.readKeys(path);
+        for (int i = 0; i < 3; i++) {
+            keys[i] = hexStringToBits(keyStrings[i]);
+        }
+        return keys;
     }
 }

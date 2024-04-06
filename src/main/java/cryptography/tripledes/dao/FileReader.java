@@ -2,8 +2,7 @@ package cryptography.tripledes.dao;
 
 import java.io.*;
 
-public class FileReader implements FileReaderInterface {
-    @Override
+public class FileReader {
     public byte[] read(String path) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (InputStream inputStream = new FileInputStream(path)) {
@@ -18,7 +17,6 @@ public class FileReader implements FileReaderInterface {
         return outputStream.toByteArray();
     }
 
-    @Override
     public void write(String path, byte[] content) throws IOException {
         try (OutputStream outputStream = new FileOutputStream(path)) {
             outputStream.write(content);
