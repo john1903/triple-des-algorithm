@@ -115,9 +115,12 @@ public class GUIController {
             return;
         }
         String path = filePathTextField.getText();
-        path = "encrypted_" + path.substring(path.lastIndexOf(File.separator) + 1);
+        String fileName = path.substring(path.lastIndexOf(File.separator) + 1);
+        String encryptedFileName = "encrypted_" + fileName;
+        String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
+        String finalPath = directoryPath + File.separator + encryptedFileName;
         try {
-            fileReader.write(path, fileContent);
+            fileReader.write(finalPath, fileContent);
         } catch (Exception e) {
             showMessage("Error writing file: " + e.getMessage());
             return;
@@ -145,13 +148,15 @@ public class GUIController {
             return;
         }
         String path = filePathTextField.getText();
-        path = path.substring(path.lastIndexOf(File.separator) + 1);
-        if (path.startsWith("encrypted_")) {
-            path = path.substring(10);
+        String fileName = path.substring(path.lastIndexOf(File.separator) + 1);
+        if (fileName.startsWith("encrypted_")) {
+            fileName = fileName.substring(10);
         }
-        path = "decrypted_" + path;
+        String encryptedFileName = "decrypted_" + fileName;
+        String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
+        String finalPath = directoryPath + File.separator + encryptedFileName;
         try {
-            fileReader.write(path, fileContent);
+            fileReader.write(finalPath, fileContent);
         } catch (Exception e) {
             showMessage("Error writing file: " + e.getMessage());
             return;
