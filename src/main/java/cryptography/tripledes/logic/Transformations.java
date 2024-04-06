@@ -1,23 +1,6 @@
 package cryptography.tripledes.logic;
 
 public class Transformations {
-    public static byte[][] key8Transformation(byte[] key) {
-        byte[] bits = new byte[56];
-        int index = 0;
-        for (int i = 0; i < 64; i++) {
-            if (i % 8 == 7) {
-                continue;
-            }
-            bits[index++] = key[i];
-        }
-        byte[][] bitsArray = new byte[2][28];
-        for (int i = 0; i < 28; i++) {
-            bitsArray[0][i] = bits[i];
-            bitsArray[1][i] = bits[i + 28];
-        }
-        return bitsArray;
-    }
-
     public static byte[] leftShift(byte[] bits, int shift) {
         int num = 0;
         for (byte bit : bits) {
@@ -30,6 +13,21 @@ public class Transformations {
             num >>= 1;
         }
         return shiftedBits;
+    }
+
+    public static byte[] stringToBits(String input) {
+        byte[] bits = new byte[input.length() * 8];
+        for (int i = 0; i < input.length(); i++) {
+            String charBits = Integer.toBinaryString(input.charAt(i));
+            int padding = 8 - charBits.length();
+            for (int j = 0; j < padding; j++) {
+                bits[i * 8 + j] = 0;
+            }
+            for (int j = 0; j < charBits.length(); j++) {
+                bits[i * 8 + padding + j] = (byte) (charBits.charAt(j) - '0');
+            }
+        }
+        return bits;
     }
 
     public static byte[] arrayCombine(byte[] array1, byte[] array2) {

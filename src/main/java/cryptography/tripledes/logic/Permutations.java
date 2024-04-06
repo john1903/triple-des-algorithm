@@ -1,6 +1,6 @@
 package cryptography.tripledes.logic;
 
-public class Permutation {
+public class Permutations {
     private static final int[][] initialPermutationTable = {
             {58, 50, 42, 34, 26, 18, 10, 2},
             {60, 52, 44, 36, 28, 20, 12, 4},
@@ -21,6 +21,15 @@ public class Permutation {
             {35, 3, 43, 11, 51, 19, 59, 27},
             {34, 2, 42, 10, 50, 18, 58, 26},
             {33, 1, 41, 9, 49, 17, 57, 25}
+    };
+
+    private static final int[][] permutedChoice2Table = {
+            {12, 45, 23, 6, 2, 41, 35, 19},
+            {33, 9, 14, 28, 42, 5, 18, 31},
+            {26, 16, 11, 3, 38, 29, 21, 44},
+            {36, 10, 4, 30, 8, 15, 43, 20},
+            {13, 7, 37, 25, 34, 22, 1, 46},
+            {17, 27, 40, 32, 39, 24, 47, 48}
     };
 
     public static byte[][] initialPermutation(byte[] input) {
@@ -63,18 +72,41 @@ public class Permutation {
         return bits;
     }
 
-    public static byte[] stringToBits(String input) {
-        byte[] bits = new byte[input.length() * 8];
-        for (int i = 0; i < input.length(); i++) {
-            String charBits = Integer.toBinaryString(input.charAt(i));
-            int padding = 8 - charBits.length();
-            for (int j = 0; j < padding; j++) {
-                bits[i * 8 + j] = 0;
+    public static byte[][] permutedChoice1(byte[] key) {
+        byte[] bits = new byte[56];
+        int index = 0;
+        for (int i = 0; i < 64; i++) {
+            if (i % 8 == 7) {
+                continue;
             }
-            for (int j = 0; j < charBits.length(); j++) {
-                bits[i * 8 + padding + j] = (byte) (charBits.charAt(j) - '0');
+            bits[index++] = key[i];
+        }
+        byte[][] bitsArray = new byte[2][28];
+        for (int i = 0; i < 28; i++) {
+            bitsArray[0][i] = bits[i];
+            bitsArray[1][i] = bits[i + 28];
+        }
+        return bitsArray;
+    }
+
+    public static byte[] permutedChoice2(byte[] key) {
+        byte[] rearrangeKey = new byte[48];
+        int index = 0;
+        for (int i = 0; i < key.length; i++) {
+            if (i % 7 == 6) {
+                continue;
+            }
+            rearrangeKey[index++] = key[i];
+        }
+        byte[] permutedKey = new byte[48];
+        int tableIndex;
+        int counter = 0;
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
+                tableIndex = permutedChoice2Table[i][j] - 1;
+                permutedKey[counter++] = rearrangeKey[tableIndex];
             }
         }
-        return bits;
+        return permutedKey;
     }
 }

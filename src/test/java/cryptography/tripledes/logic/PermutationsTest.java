@@ -1,12 +1,12 @@
 package cryptography.tripledes.logic;
 
-import cryptography.tripledes.dao.FileReader;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PermutationTest {
+class PermutationsTest {
     private static final int[][] initialPermutationTable = {
             {58, 50, 42, 34, 26, 18, 10, 2},
             {60, 52, 44, 36, 28, 20, 12, 4},
@@ -29,11 +29,20 @@ class PermutationTest {
             {33, 1, 41, 9, 49, 17, 57, 25}
     };
 
+    private static final int[][] permutedChoice2Table = {
+            {14, 17, 11, 24, 1, 5, 3, 28},
+            {15, 6, 21, 10, 23, 19, 12, 4},
+            {26, 8, 16, 7, 27, 20, 13, 2},
+            {41, 52, 31, 37, 47, 55, 30, 40},
+            {51, 45, 33, 48, 44, 49, 39, 56},
+            {34, 53, 46, 42, 50, 36, 29, 32}
+    };
+
     @Test
     void initialPermutation() {
         String string = "01234567";
-        byte[] input = Permutation.stringToBits(string);
-        byte[][] result = Permutation.initialPermutation(input);
+        byte[] input = Transformations.stringToBits(string);
+        byte[][] result = Permutations.initialPermutation(input);
         assertNotNull(result);
         assertEquals(2, result.length);
         assertEquals(32, result[0].length);
@@ -56,9 +65,9 @@ class PermutationTest {
     @Test
     void finalPermutation() {
         String string = "01234567";
-        byte[] left = Permutation.stringToBits(string);
-        byte[] right = Permutation.stringToBits(string);
-        byte[] output = Permutation.finalPermutation(left, right);
+        byte[] left = Transformations.stringToBits(string);
+        byte[] right = Transformations.stringToBits(string);
+        byte[] output = Permutations.finalPermutation(left, right);
         assertNotNull(output);
         assertEquals(64, output.length);
         int index;
@@ -74,6 +83,43 @@ class PermutationTest {
                     assertEquals(expected, output[index], "Right bits should be equal");
                 }
             }
+        }
+    }
+
+    @Test
+    void permutedChoice1() {
+        byte[] key = new byte[64];
+        for (int i = 0; i < 64; i++) {
+            key[i] = (byte) (1);
+            if (i % 8 == 7) {
+                key[i] = (byte) (0);
+            }
+        }
+        byte[][] bits = Permutations.permutedChoice1(key);
+        assertNotNull(bits);
+        assertEquals(28, bits[0].length);
+        assertEquals(28, bits[1].length);
+        for (int i = 0; i < 28; i++) {
+            assertEquals(1, bits[0][i]);
+            assertEquals(1, bits[1][i]);
+        }
+    }
+
+    @Test
+    void permutedChoice2Test1() {
+        byte[] key = new byte[56];
+        for (int i = 0; i < 56; i++) {
+            if (i % 7 == 6) {
+                key[i] = (byte) (0);
+            } else {
+                key[i] = (byte) (1);
+            }
+        }
+        byte[] bits = Permutations.permutedChoice2(key);
+        assertNotNull(bits);
+        assertEquals(48, bits.length);
+        for (int i = 0; i < 48; i++) {
+            assertEquals(1, bits[i]);
         }
     }
 }
