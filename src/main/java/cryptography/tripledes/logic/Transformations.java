@@ -17,4 +17,18 @@ public class Transformations {
         }
         return bitsArray;
     }
+
+    public static byte[] leftShift(byte[] bits, int shift) {
+        int num = 0;
+        for (byte bit : bits) {
+            num = (num << 1) | bit;
+        }
+        num <<= shift;
+        byte[] shiftedBits = new byte[bits.length];
+        for (int i = bits.length - 1; i >= 0; i--) {
+            shiftedBits[i] = (byte) (num & 1);
+            num >>= 1;
+        }
+        return shiftedBits;
+    }
 }
