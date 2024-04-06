@@ -1,5 +1,6 @@
 package cryptography.tripledes.gui;
 
+import cryptography.tripledes.dao.FileReader;
 import cryptography.tripledes.dao.KeyReader;
 import cryptography.tripledes.managers.KeyManager;
 import javafx.animation.KeyFrame;
@@ -19,10 +20,12 @@ public class GUIController {
     @FXML
     private TextField keyPathTextField;
     private KeyManager keyManager;
+    private FileReader fileReader;
 
     @FXML
     public void initialize() {
         keyManager = new KeyManager(new KeyReader());
+        fileReader = new FileReader();
     }
 
     @FXML
@@ -98,7 +101,28 @@ public class GUIController {
                 validateTextField(keyPathTextField, "Enter key file path or destination path")) {
             return;
         }
-        showMessage("Encrypting file...");
+        try {
+            keyManager.readKeys(keyPathTextField.getText());
+        } catch (Exception e) {
+            showMessage("Error reading keys: " + e.getMessage());
+            return;
+        }
+        byte[] fileContent;
+        try {
+            fileContent = fileReader.read(filePathTextField.getText());
+        } catch (Exception e) {
+            showMessage("Error reading file: " + e.getMessage());
+            return;
+        }
+        String path = filePathTextField.getText();
+        path = "encrypted_" + path.substring(path.lastIndexOf(File.separator) + 1);
+        try {
+            fileReader.write(path, fileContent);
+        } catch (Exception e) {
+            showMessage("Error writing file: " + e.getMessage());
+            return;
+        }
+        showMessage("Encrypting successful!");
     }
 
     @FXML
@@ -107,7 +131,32 @@ public class GUIController {
                 validateTextField(keyPathTextField, "Enter key file path or destination path")) {
             return;
         }
-        showMessage("Decrypting file...");
+        try {
+            keyManager.readKeys(keyPathTextField.getText());
+        } catch (Exception e) {
+            showMessage("Error reading keys: " + e.getMessage());
+            return;
+        }
+        byte[] fileContent;
+        try {
+            fileContent = fileReader.read(filePathTextField.getText());
+        } catch (Exception e) {
+            showMessage("Error reading file: " + e.getMessage());
+            return;
+        }
+        String path = filePathTextField.getText();
+        path = path.substring(path.lastIndexOf(File.separator) + 1);
+        if (path.startsWith("encrypted_")) {
+            path = path.substring(10);
+        }
+        path = "decrypted_" + path;
+        try {
+            fileReader.write(path, fileContent);
+        } catch (Exception e) {
+            showMessage("Error writing file: " + e.getMessage());
+            return;
+        }
+        showMessage("Decrypting successful!");
     }
 
     @FXML
