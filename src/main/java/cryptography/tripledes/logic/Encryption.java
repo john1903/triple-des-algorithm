@@ -1,7 +1,5 @@
 package cryptography.tripledes.logic;
 
-import java.util.Arrays;
-
 public class Encryption {
     private static final int[] shiftTable = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
