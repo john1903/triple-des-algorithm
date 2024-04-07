@@ -10,11 +10,11 @@ class EncryptionTest {
         String keyString = "0123456789ABCDEF";
         byte[] key = KeyGenerator.hexStringToBits(keyString);
         byte[] text = Transformations.stringToBits("01234567");
-        byte[] encrypted = Encryption.encryption(text, key, 0);
+        byte[] encrypted = Encryption.encryption(text, key);
         assertNotNull(encrypted);
         assertEquals(64, encrypted.length);
         System.out.println();
-        byte[] decrypted = Encryption.encryption(encrypted, key, 1);
+        byte[] decrypted = Encryption.decryption(encrypted, key);
         assertNotNull(decrypted);
         assertEquals(64, decrypted.length);
         assertEquals("01234567", Transformations.bitsToString(decrypted));

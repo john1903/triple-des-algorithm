@@ -27,7 +27,7 @@ public class GUIController {
     public void initialize() {
         keyManager = new KeyManager(new KeyReader());
         fileReader = new FileReader();
-        encryptionManager = new EncryptionManagerCipher();
+        encryptionManager = new EncryptionManagerTripleDes();
     }
 
     @FXML

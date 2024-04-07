@@ -18,9 +18,9 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
                     blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
                 }
             }
-            blockBinary = Encryption.encryption(blockBinary, key1, 0);
-            blockBinary = Encryption.encryption(blockBinary, key2, 0);
-            blockBinary = Encryption.encryption(blockBinary, key3, 0);
+            blockBinary = Encryption.encryption(blockBinary, key1);
+            blockBinary = Encryption.encryption(blockBinary, key2);
+            blockBinary = Encryption.encryption(blockBinary, key3);
             for (int i = 0; i < 8; i++) {
                 byte b = 0;
                 for (int j = 0; j < 8; j++) {
@@ -49,9 +49,9 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
                     blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
                 }
             }
-            blockBinary = Encryption.encryption(blockBinary, key3, 1);
-            blockBinary = Encryption.encryption(blockBinary, key2, 1);
-            blockBinary = Encryption.encryption(blockBinary, key1, 1);
+            blockBinary = Encryption.decryption(blockBinary, key3);
+            blockBinary = Encryption.decryption(blockBinary, key2);
+            blockBinary = Encryption.decryption(blockBinary, key1);
             for (int i = 0; i < 8; i++) {
                 byte b = 0;
                 for (int j = 0; j < 8; j++) {
