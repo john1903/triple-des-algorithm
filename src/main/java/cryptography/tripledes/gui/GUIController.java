@@ -89,10 +89,10 @@ public class GUIController {
         }
     }
 
-    private void showMessage(String message) {
+    private void showMessage(String message, String title, Alert.AlertType type) {
         if (message != null && !message.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
+            Alert alert = new Alert(type);
+            alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setContentText(message);
             alert.showAndWait();
@@ -109,14 +109,14 @@ public class GUIController {
         try {
             keys = keyManager.read(keyPathTextField.getText());
         } catch (Exception e) {
-            showMessage("Error reading keys: " + e.getMessage());
+            showMessage("Error reading keys!", "Error", Alert.AlertType.ERROR);
             return;
         }
         byte[] fileContent;
         try {
             fileContent = fileManager.read(filePathTextField.getText());
         } catch (Exception e) {
-            showMessage("Error reading file: " + e.getMessage());
+            showMessage("Error reading file!", "Error", Alert.AlertType.ERROR);
             return;
         }
         String path = filePathTextField.getText();
@@ -124,19 +124,14 @@ public class GUIController {
         String encryptedFileName = "encrypted_" + fileName;
         String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
         String finalPath = directoryPath + File.separator + encryptedFileName;
-        try {
-            fileContent = encryptionManager.encrypt(fileContent, keys[0], keys[1], keys[2]);
-        } catch (Exception e) {
-            showMessage("Error encrypting file: " + e.getMessage());
-            return;
-        }
+        fileContent = encryptionManager.encrypt(fileContent, keys[0], keys[1], keys[2]);
         try {
             fileManager.write(finalPath, fileContent);
         } catch (Exception e) {
-            showMessage("Error writing file: " + e.getMessage());
+            showMessage("Error writing file!", "Error", Alert.AlertType.ERROR);
             return;
         }
-        showMessage("Encrypting successful!");
+        showMessage("Encrypting successful!", "Success", Alert.AlertType.INFORMATION);
     }
 
     @FXML
@@ -149,14 +144,14 @@ public class GUIController {
         try {
             keys = keyManager.read(keyPathTextField.getText());
         } catch (Exception e) {
-            showMessage("Error reading keys: " + e.getMessage());
+            showMessage("Error reading keys!", "Error", Alert.AlertType.ERROR);
             return;
         }
         byte[] fileContent;
         try {
             fileContent = fileManager.read(filePathTextField.getText());
         } catch (Exception e) {
-            showMessage("Error reading file: " + e.getMessage());
+            showMessage("Error reading file!", "Error", Alert.AlertType.ERROR);
             return;
         }
         String path = filePathTextField.getText();
@@ -167,19 +162,14 @@ public class GUIController {
         String encryptedFileName = "decrypted_" + fileName;
         String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
         String finalPath = directoryPath + File.separator + encryptedFileName;
-        try {
-            fileContent = encryptionManager.decrypt(fileContent, keys[0], keys[1], keys[2]);
-        } catch (Exception e) {
-            showMessage("Error encrypting file: " + e.getMessage());
-            return;
-        }
+        fileContent = encryptionManager.decrypt(fileContent, keys[0], keys[1], keys[2]);
         try {
             fileManager.write(finalPath, fileContent);
         } catch (Exception e) {
-            showMessage("Error writing file: " + e.getMessage());
+            showMessage("Error writing file!", "Error", Alert.AlertType.ERROR);
             return;
         }
-        showMessage("Decrypting successful!");
+        showMessage("Decrypting successful!", "Success", Alert.AlertType.INFORMATION);
     }
 
     @FXML
@@ -190,9 +180,9 @@ public class GUIController {
         try {
             keyManager.write(keyPathTextField.getText());
         } catch (Exception e) {
-            showMessage("Error generating keys: " + e.getMessage());
+            showMessage("Error generating keys!", "Error", Alert.AlertType.ERROR);
             return;
         }
-        showMessage("Generating keys successful!");
+        showMessage("Generating keys successful!", "Success", Alert.AlertType.INFORMATION);
     }
 }

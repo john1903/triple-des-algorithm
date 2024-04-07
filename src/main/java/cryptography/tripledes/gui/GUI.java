@@ -15,8 +15,9 @@ public class GUI extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 600, 350);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(
                 "/cryptography/tripledes/gui/style.css")).toExternalForm());
-        stage.setTitle("Triple DES Encryption/Decryption Tool");
+        stage.setTitle("Encryption/Decryption Tool");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
