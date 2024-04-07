@@ -212,14 +212,4 @@ public class Permutations {
         }
         return output;
     }
-
-    public static byte[] reversePPermutation(byte[] input) {
-        byte[] output = new byte[32];
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 16; j++) {
-                output[pTable[i][j] - 1] = input[i * 16 + j];
-            }
-        }
-        return output;
-    }
 }

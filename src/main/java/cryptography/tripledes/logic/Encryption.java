@@ -29,7 +29,6 @@ public class Encryption {
                 keyArray = new byte[][]{Transformations.leftShift(keyArray[0], shiftTable[i]),
                         Transformations.leftShift(keyArray[1], shiftTable[i])};
                 key1 = Permutations.permutedChoice2(Transformations.arrayCombine(keyArray[0], keyArray[1]));
-                System.out.println(Arrays.toString(Transformations.arrayCombine(keyArray[0], keyArray[1])));
                 byteArray = Encryption.encryption(byteArray[0], byteArray[1], key1);
             }
         } else {
@@ -41,7 +40,6 @@ public class Encryption {
             }
             for (int i = 15; i >= 0; i--) {
                 key1 = Permutations.permutedChoice2(Transformations.arrayCombine(keyArray2[i][0], keyArray2[i][1]));
-                System.out.println(Arrays.toString(Transformations.arrayCombine(keyArray2[i][0], keyArray2[i][1])));
                 byteArray = Encryption.encryption(byteArray[0], byteArray[1], key1);
             }
         }

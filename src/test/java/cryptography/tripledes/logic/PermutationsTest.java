@@ -270,13 +270,4 @@ class PermutationsTest {
         byte[] output = Permutations.finalPermutation(result[0], result[1]);
         assertEquals(string, Transformations.bitsToString(output));
     }
-
-    @Test
-    void pPermutationAndBack() {
-        String string = "0123";
-        byte[] input = Transformations.stringToBits(string);
-        byte[] output = Permutations.pPermutation(input);
-        output = Permutations.reversePPermutation(output);
-        assertEquals(string, Transformations.bitsToString(output));
-    }
 }
