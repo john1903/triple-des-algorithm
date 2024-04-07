@@ -22,13 +22,13 @@ public class GUIController {
     @FXML
     private TextField keyPathTextField;
     private KeyManager keyManager;
-    private FileReader fileReader;
+    private FileManager fileManager;
     private EncryptionManager encryptionManager;
 
     @FXML
     public void initialize() {
         keyManager = new KeyManager(new KeyReader(), new KeyGenerator());
-        fileReader = new FileReader();
+        fileManager = new FileManager(new FileReader());
         encryptionManager = new EncryptionManager(new DesEncryption());
     }
 
@@ -107,14 +107,14 @@ public class GUIController {
         }
         byte[][] keys;
         try {
-            keys = keyManager.readKeys(keyPathTextField.getText());
+            keys = keyManager.read(keyPathTextField.getText());
         } catch (Exception e) {
             showMessage("Error reading keys: " + e.getMessage());
             return;
         }
         byte[] fileContent;
         try {
-            fileContent = fileReader.read(filePathTextField.getText());
+            fileContent = fileManager.read(filePathTextField.getText());
         } catch (Exception e) {
             showMessage("Error reading file: " + e.getMessage());
             return;
@@ -131,7 +131,7 @@ public class GUIController {
             return;
         }
         try {
-            fileReader.write(finalPath, fileContent);
+            fileManager.write(finalPath, fileContent);
         } catch (Exception e) {
             showMessage("Error writing file: " + e.getMessage());
             return;
@@ -147,14 +147,14 @@ public class GUIController {
         }
         byte[][] keys;
         try {
-            keys = keyManager.readKeys(keyPathTextField.getText());
+            keys = keyManager.read(keyPathTextField.getText());
         } catch (Exception e) {
             showMessage("Error reading keys: " + e.getMessage());
             return;
         }
         byte[] fileContent;
         try {
-            fileContent = fileReader.read(filePathTextField.getText());
+            fileContent = fileManager.read(filePathTextField.getText());
         } catch (Exception e) {
             showMessage("Error reading file: " + e.getMessage());
             return;
@@ -174,7 +174,7 @@ public class GUIController {
             return;
         }
         try {
-            fileReader.write(finalPath, fileContent);
+            fileManager.write(finalPath, fileContent);
         } catch (Exception e) {
             showMessage("Error writing file: " + e.getMessage());
             return;
@@ -188,7 +188,7 @@ public class GUIController {
             return;
         }
         try {
-            keyManager.generateKeys(keyPathTextField.getText());
+            keyManager.write(keyPathTextField.getText());
         } catch (Exception e) {
             showMessage("Error generating keys: " + e.getMessage());
             return;

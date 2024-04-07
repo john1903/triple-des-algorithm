@@ -4,7 +4,7 @@ import java.io.*;
 
 public class KeyReader implements KeyReaderInterface {
     @Override
-    public String[] readKeys(String path) throws IOException {
+    public String[] read(String path) throws IOException {
         String[] keys = new String[3];
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
             String line;
@@ -20,7 +20,7 @@ public class KeyReader implements KeyReaderInterface {
     }
 
     @Override
-    public void writeKeys(String path, String[] keys) throws IOException {
+    public void write(String path, String[] keys) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path)))) {
             for (String key : keys) {
                 writer.write(key);

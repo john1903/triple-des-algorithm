@@ -21,7 +21,7 @@ class KeyReaderTest {
     @Test
     void testReadKeys() {
         try {
-            String[] keys = keyReader.readKeys("src/test/java/cryptography/tripledes/dao/keys.txt");
+            String[] keys = keyReader.read("src/test/java/cryptography/tripledes/dao/keys.txt");
             assertNotNull(keys);
             assertEquals(3, keys.length);
             for (String key : keys) {
@@ -40,8 +40,8 @@ class KeyReaderTest {
             for (int i = 0; i < 3; i++) {
                 keys[i] = keyGenerator.generateKey();
             }
-            keyReader.writeKeys("src/test/java/cryptography/tripledes/dao/keys_copy.txt", keys);
-            String[] keysCopy = keyReader.readKeys("src/test/java/cryptography/tripledes/dao/keys_copy.txt");
+            keyReader.write("src/test/java/cryptography/tripledes/dao/keys_copy.txt", keys);
+            String[] keysCopy = keyReader.read("src/test/java/cryptography/tripledes/dao/keys_copy.txt");
             assertArrayEquals(keys, keysCopy);
             File fileCopy = new File("src/test/java/cryptography/tripledes/dao/keys_copy.txt");
             if (fileCopy.exists()) {

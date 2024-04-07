@@ -6,25 +6,25 @@ import cryptography.tripledes.logic.KeyGeneratorInterface;
 import java.io.IOException;
 
 public class KeyManager {
-    KeyReaderInterface keyReader;
-    KeyGeneratorInterface generator;
+    private final KeyReaderInterface keyReader;
+    private final KeyGeneratorInterface generator;
 
     public KeyManager(KeyReaderInterface keyReader, KeyGeneratorInterface generator) {
         this.keyReader = keyReader;
         this.generator = generator;
     }
 
-    public void generateKeys(String path) throws IOException {
+    public void write(String path) throws IOException {
         String[] keys = new String[3];
         for (int i = 0; i < 3; i++) {
             keys[i] = generator.generateKey();
         }
-        keyReader.writeKeys(path, keys);
+        keyReader.write(path, keys);
     }
 
-    public byte[][] readKeys(String path) throws IOException {
+    public byte[][] read(String path) throws IOException {
         byte[][] keys = new byte[3][];
-        String[] keyStrings = keyReader.readKeys(path);
+        String[] keyStrings = keyReader.read(path);
         for (int i = 0; i < 3; i++) {
             keys[i] = generator.convertKeyToBits(keyStrings[i]);
         }

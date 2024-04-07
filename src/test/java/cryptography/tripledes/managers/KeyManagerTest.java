@@ -20,13 +20,13 @@ class KeyManagerTest {
     @Test
     void generateKeys() {
         try {
-            keyManager.generateKeys("src/test/java/cryptography/tripledes/managers/keys_copy.txt");
+            keyManager.write("src/test/java/cryptography/tripledes/managers/keys_copy.txt");
         } catch (Exception e) {
             throw new RuntimeException("Error generating keys: " + e.getMessage());
         }
         byte[][] key;
         try {
-            key = keyManager.readKeys("src/test/java/cryptography/tripledes/managers/keys_copy.txt");
+            key = keyManager.read("src/test/java/cryptography/tripledes/managers/keys_copy.txt");
         } catch (Exception e) {
             throw new RuntimeException("Error reading keys from file: " + e.getMessage());
         }
@@ -43,7 +43,7 @@ class KeyManagerTest {
     void readKeys() {
         byte[][] key;
         try {
-            key = keyManager.readKeys("src/test/java/cryptography/tripledes/managers/keys.txt");
+            key = keyManager.read("src/test/java/cryptography/tripledes/managers/keys.txt");
         } catch (Exception e) {
             throw new RuntimeException("Error writing keys to file: " + e.getMessage());
         }
