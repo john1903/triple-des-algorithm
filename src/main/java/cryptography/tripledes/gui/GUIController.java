@@ -125,7 +125,7 @@ public class GUIController {
         String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
         String finalPath = directoryPath + File.separator + encryptedFileName;
         try {
-            fileContent = encryptionManager.encryptData(fileContent, keys[0], keys[1], keys[2]);
+            fileContent = encryptionManager.encrypt(fileContent, keys[0], keys[1], keys[2]);
         } catch (Exception e) {
             showMessage("Error encrypting file: " + e.getMessage());
             return;
@@ -168,7 +168,7 @@ public class GUIController {
         String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
         String finalPath = directoryPath + File.separator + encryptedFileName;
         try {
-            fileContent = encryptionManager.decryptData(fileContent, keys[0], keys[1], keys[2]);
+            fileContent = encryptionManager.decrypt(fileContent, keys[0], keys[1], keys[2]);
         } catch (Exception e) {
             showMessage("Error encrypting file: " + e.getMessage());
             return;
