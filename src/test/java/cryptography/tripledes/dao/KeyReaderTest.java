@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KeyReaderTest {
     KeyReader keyReader;
+    KeyGenerator keyGenerator;
 
     @BeforeEach
     void setUp() {
         keyReader = new KeyReader();
+        keyGenerator = new KeyGenerator();
     }
 
     @Test
@@ -36,14 +38,14 @@ class KeyReaderTest {
         try {
             String[] keys = new String[3];
             for (int i = 0; i < 3; i++) {
-                keys[i] = KeyGenerator.generateKey();
+                keys[i] = keyGenerator.generateKey();
             }
             keyReader.writeKeys("src/test/java/cryptography/tripledes/dao/keys_copy.txt", keys);
             String[] keysCopy = keyReader.readKeys("src/test/java/cryptography/tripledes/dao/keys_copy.txt");
             assertArrayEquals(keys, keysCopy);
             File fileCopy = new File("src/test/java/cryptography/tripledes/dao/keys_copy.txt");
             if (fileCopy.exists()) {
-                fileCopy.delete();
+                assertTrue(fileCopy.delete());
             }
         } catch (Exception e) {
             fail("Error writing keys to file: " + e.getMessage());

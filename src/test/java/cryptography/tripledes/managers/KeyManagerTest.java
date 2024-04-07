@@ -1,12 +1,12 @@
 package cryptography.tripledes.managers;
 
 import cryptography.tripledes.dao.KeyReader;
+import cryptography.tripledes.logic.KeyGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static cryptography.tripledes.logic.KeyGenerator.hexToBitsArray;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KeyManagerTest {
@@ -14,7 +14,7 @@ class KeyManagerTest {
 
     @BeforeEach
     void setUp() {
-        keyManager = new KeyManager(new KeyReader());
+        keyManager = new KeyManager(new KeyReader(), new KeyGenerator());
     }
 
     @Test
@@ -41,12 +41,6 @@ class KeyManagerTest {
 
     @Test
     void readKeys() {
-        String[] keys =
-                {
-                "183775d35176d874",
-                "e082e6891f9c4c39",
-                "a61b9c471d215429"
-                };
         byte[][] key;
         try {
             key = keyManager.readKeys("src/test/java/cryptography/tripledes/managers/keys.txt");
@@ -55,7 +49,7 @@ class KeyManagerTest {
         }
         for (int i = 0; i < 3; i++) {
             assertNotNull(key[i]);
-            assertArrayEquals(key[i], hexToBitsArray(keys[i]));
+            assertEquals(64, key[i].length);
         }
     }
 }

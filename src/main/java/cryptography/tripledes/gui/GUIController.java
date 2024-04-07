@@ -3,6 +3,7 @@ package cryptography.tripledes.gui;
 import cryptography.tripledes.dao.FileReader;
 import cryptography.tripledes.dao.KeyReader;
 import cryptography.tripledes.logic.DesEncryption;
+import cryptography.tripledes.logic.KeyGenerator;
 import cryptography.tripledes.managers.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -26,7 +27,7 @@ public class GUIController {
 
     @FXML
     public void initialize() {
-        keyManager = new KeyManager(new KeyReader());
+        keyManager = new KeyManager(new KeyReader(), new KeyGenerator());
         fileReader = new FileReader();
         encryptionManager = new EncryptionManager(new DesEncryption());
     }
