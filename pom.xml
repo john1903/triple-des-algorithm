@@ -6,9 +6,15 @@
 
     <groupId>cryptography</groupId>
     <artifactId>TripleDes</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>TripleDes</name>
-
+    <description>TripleDes encryption and decryption algorithm</description>
+    <licenses>
+        <license>
+            <name>Creative Commons Attribution-ShareAlike v4.0</name>
+            <url>https://creativecommons.org/licenses/by-sa/4.0/</url>
+        </license>
+    </licenses>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.0</junit.version>
@@ -57,7 +63,6 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>cryptography.tripledes/cryptography.tripledes.gui.GUI</mainClass>
@@ -73,4 +78,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
