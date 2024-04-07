@@ -126,22 +126,20 @@ public class Permutations {
     }
 
     public static byte[] finalPermutation(byte[] left, byte[] right) {
-        byte[] bitSet = new byte[64];
+        byte[] combined = new byte[64];
         for (int i = 0; i < 32; i++) {
-            bitSet[i] = left[i];
-            bitSet[i + 32] = right[i];
+            combined[i] = left[i];
+            combined[i + 32] = right[i];
         }
-        byte[] bits = new byte[64];
+        byte[] output = new byte[64];
+        int index;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (bitSet[i * 8 + j] == 1) {
-                    bits[finalPermutationTable[i][j] - 1] = 1;
-                } else {
-                    bits[finalPermutationTable[i][j] - 1] = 0;
-                }
+                index = finalPermutationTable[i][j] - 1;
+                output[i * 8 + j] = combined[index];
             }
         }
-        return bits;
+        return output;
     }
 
     public static byte[][] permutedChoice1(byte[] key) {
