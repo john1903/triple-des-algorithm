@@ -9,11 +9,25 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
         int index = 0;
         while (index < data.length) {
             byte[] block = new byte[8];
-            int length = Math.min(8, data.length - index); // Obliczenie długości bloku
+            int length = Math.min(8, data.length - index);
             System.arraycopy(data, index, block, 0, length);
-            Encryption.encryption(block, key1, 0);
-            Encryption.encryption(block, key2, 0);
-            Encryption.encryption(block, key3, 0);
+            byte[] blockBinary = new byte[64];
+            for (int i = 0; i < 8; i++) {
+                byte b = block[i];
+                for (int j = 7; j >= 0; j--) {
+                    blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
+                }
+            }
+            blockBinary = Encryption.encryption(blockBinary, key1, 0);
+            blockBinary = Encryption.encryption(blockBinary, key2, 0);
+            blockBinary = Encryption.encryption(blockBinary, key3, 0);
+            for (int i = 0; i < 8; i++) {
+                byte b = 0;
+                for (int j = 0; j < 8; j++) {
+                    b |= (byte) (blockBinary[i * 8 + j] << (7 - j));
+                }
+                block[i] = b;
+            }
             System.arraycopy(block, 0, encryptedData, index, length);
             index += 8;
         }
@@ -26,11 +40,25 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
         int index = 0;
         while (index < encryptedData.length) {
             byte[] block = new byte[8];
-            int length = Math.min(8, encryptedData.length - index); // Obliczenie długości bloku
+            int length = Math.min(8, encryptedData.length - index);
             System.arraycopy(encryptedData, index, block, 0, length);
-            Encryption.encryption(block, key3, 1);
-            Encryption.encryption(block, key2, 1);
-            Encryption.encryption(block, key1, 1);
+            byte[] blockBinary = new byte[64];
+            for (int i = 0; i < 8; i++) {
+                byte b = block[i];
+                for (int j = 7; j >= 0; j--) {
+                    blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
+                }
+            }
+            blockBinary = Encryption.encryption(blockBinary, key3, 1);
+            blockBinary = Encryption.encryption(blockBinary, key2, 1);
+            blockBinary = Encryption.encryption(blockBinary, key1, 1);
+            for (int i = 0; i < 8; i++) {
+                byte b = 0;
+                for (int j = 0; j < 8; j++) {
+                    b |= (byte) (blockBinary[i * 8 + j] << (7 - j));
+                }
+                block[i] = b;
+            }
             System.arraycopy(block, 0, decryptedData, index, length);
             index += 8;
         }

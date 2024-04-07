@@ -2,10 +2,7 @@ package cryptography.tripledes.gui;
 
 import cryptography.tripledes.dao.FileReader;
 import cryptography.tripledes.dao.KeyReader;
-import cryptography.tripledes.managers.EncryptionManagerCipher;
-import cryptography.tripledes.managers.EncryptionManagerInterface;
-import cryptography.tripledes.managers.KeyManager;
-import cryptography.tripledes.managers.KeyManagerInterface;
+import cryptography.tripledes.managers.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
