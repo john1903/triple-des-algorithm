@@ -19,4 +19,20 @@ class EncryptionTest {
         assertEquals(64, decrypted.length);
         assertEquals("01234567", Transformations.bitsToString(decrypted));
     }
+
+//    @Test
+//    void getKeysArray() {
+//        byte[] key =
+//                { 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1,
+//                        0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 };
+//        byte[] expectedFirst = {0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+//                0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0};
+//        byte[] expectedLast = {1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1,
+//                1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1};
+//        byte[][] keyArray = Encryption.getKeysArray(key);
+//        for (int i = 0; i < keyArray[0].length; i++) {
+//            assertEquals(keyArray[0][i], expectedFirst[i]);
+//            assertEquals(keyArray[15][i], expectedLast[i]);
+//        }
+//    }
 }

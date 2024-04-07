@@ -3,6 +3,19 @@ package cryptography.tripledes.logic;
 public class Encryption {
     private static final int[] shiftTable = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
+    private static byte[][] getKeysArray(byte[] key) {
+        byte[][] keyArray = Permutations.permutedChoice1(key);
+        byte[][] shifted  = new byte[16][];
+        byte[][] permutedChoice2 = new byte[16][];
+        for (int i = 0; i < 16; i++) {
+            keyArray[0] = Transformations.leftShift(keyArray[0], shiftTable[i]);
+            keyArray[1] = Transformations.leftShift(keyArray[1], shiftTable[i]);
+            shifted[i] = Transformations.arrayCombine(keyArray[0].clone(), keyArray[1].clone());
+            permutedChoice2[i] = Permutations.permutedChoice2(shifted[i]);
+        }
+        return permutedChoice2;
+    }
+
     private static byte[] function(byte[] input, byte[] key) {
         input = Permutations.expansionPermutation(input);
         input = Transformations.xor(input, key);

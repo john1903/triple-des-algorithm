@@ -1,19 +1,22 @@
 package cryptography.tripledes.logic;
 
+import java.util.Arrays;
+
 public class Transformations {
     public static byte[] leftShift(byte[] bits, int shift) {
-        int num = 0;
-        for (byte bit : bits) {
-            num = (num << 1) | bit;
-        }
-        num <<= shift;
         byte[] shiftedBits = new byte[bits.length];
-        for (int i = bits.length - 1; i >= 0; i--) {
-            shiftedBits[i] = (byte) (num & 1);
-            num >>= 1;
+        int number = 0;
+        for (byte bit : bits) {
+            number = (number << 1) | bit;
+        }
+        number = (number << shift) | (number >> (bits.length - shift));
+        for (int i = 0; i < bits.length; i++) {
+            shiftedBits[i] = (byte) ((number >> (bits.length - 1 - i)) & 1);
         }
         return shiftedBits;
     }
+
+
 
     public static byte[] stringToBits(String input) {
         byte[] bits = new byte[input.length() * 8];

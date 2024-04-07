@@ -26,7 +26,7 @@ public class Permutations {
     private static final int[][] permutedChoice1Table = {
             {57, 49, 41, 33, 25, 17, 9, 1},
             {58, 50, 42, 34, 26, 18, 10, 2},
-            {59, 51, 43, 35, 27, 19, 1, 3},
+            {59, 51, 43, 35, 27, 19, 11, 3},
             {60, 52, 44, 36, 63, 55, 47, 39},
             {31, 23, 15, 7, 62, 54, 46, 38},
             {30, 22, 14, 6, 61, 53, 45, 37},
@@ -109,13 +109,11 @@ public class Permutations {
 
     public static byte[][] initialPermutation(byte[] input) {
         byte[] bitSet = new byte[64];
+        int index;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (input[i * 8 + j] == 1) {
-                    bitSet[(initialPermutationTable[i][j]) - 1] = 1;
-                } else {
-                    bitSet[(initialPermutationTable[i][j]) - 1] = 0;
-                }
+                index = initialPermutationTable[i][j] - 1;
+                bitSet[i * 8 + j] = input[index];
             }
         }
         byte[] left = new byte[32];
@@ -126,8 +124,6 @@ public class Permutations {
         }
         return new byte[][]{left, right};
     }
-
-
 
     public static byte[] finalPermutation(byte[] left, byte[] right) {
         byte[] bitSet = new byte[64];
