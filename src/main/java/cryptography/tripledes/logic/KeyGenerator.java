@@ -10,6 +10,7 @@ public class KeyGenerator implements KeyGeneratorInterface {
         return bits;
     }
 
+    @Override
     public byte[] convertKeyToBits(String hex) {
         byte[] bits = new byte[hex.length() * 4];
         int index = 0;
@@ -22,6 +23,7 @@ public class KeyGenerator implements KeyGeneratorInterface {
         return bits;
     }
 
+    @Override
     public String generateKey() {
         StringBuilder key = new StringBuilder();
         for (int i = 0; i < 16; i++) {

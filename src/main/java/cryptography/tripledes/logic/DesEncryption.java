@@ -23,6 +23,7 @@ public class DesEncryption implements EncryptionInterface {
         return Permutations.pBoxPermutation(input);
     }
 
+    @Override
     public byte[] encryption(byte[] input, byte[] key) {
         byte[][] inputArray = Permutations.initialPermutation(input);
         byte[] left = inputArray[0];
@@ -36,6 +37,7 @@ public class DesEncryption implements EncryptionInterface {
         return Permutations.finalPermutation(left, right);
     }
 
+    @Override
     public byte[] decryption(byte[] input, byte[] key) {
         byte[][] inputArray = Permutations.initialPermutation(input);
         byte[] left = inputArray[0];

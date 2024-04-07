@@ -1,15 +1,15 @@
 package cryptography.tripledes.managers;
 
-import cryptography.tripledes.dao.KeyReader;
+import cryptography.tripledes.dao.KeyReaderInterface;
 import cryptography.tripledes.logic.KeyGeneratorInterface;
 
 import java.io.IOException;
 
 public class KeyManager {
-    KeyReader keyReader;
+    KeyReaderInterface keyReader;
     KeyGeneratorInterface generator;
 
-    public KeyManager(KeyReader keyReader, KeyGeneratorInterface generator) {
+    public KeyManager(KeyReaderInterface keyReader, KeyGeneratorInterface generator) {
         this.keyReader = keyReader;
         this.generator = generator;
     }
