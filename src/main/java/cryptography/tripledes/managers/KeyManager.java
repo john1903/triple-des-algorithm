@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import static cryptography.tripledes.logic.KeyGenerator.hexStringToBits;
 
-public class KeyManager implements KeyManagerInterface {
+public class KeyManager {
     KeyReader keyReader;
 
     public KeyManager(KeyReader keyReader) {

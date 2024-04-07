@@ -1,10 +1,15 @@
 package cryptography.tripledes.managers;
 
-import cryptography.tripledes.logic.Encryption;
+import cryptography.tripledes.logic.EncryptionInterface;
 
-public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
-    @Override
-    public byte[] encryptData(byte[] data, byte[] key1, byte[] key2, byte[] key3) throws Exception {
+public class EncryptionManager {
+    private final EncryptionInterface encryptor;
+
+    public EncryptionManager(EncryptionInterface encryptor) {
+        this.encryptor = encryptor;
+    }
+
+    public byte[] encryptData(byte[] data, byte[] key1, byte[] key2, byte[] key3) {
         byte[] encryptedData = new byte[data.length];
         int index = 0;
         while (index < data.length) {
@@ -18,9 +23,9 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
                     blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
                 }
             }
-            blockBinary = Encryption.encryption(blockBinary, key1);
-            blockBinary = Encryption.encryption(blockBinary, key2);
-            blockBinary = Encryption.encryption(blockBinary, key3);
+            blockBinary = encryptor.encryption(blockBinary, key1);
+            blockBinary = encryptor.encryption(blockBinary, key2);
+            blockBinary = encryptor.encryption(blockBinary, key3);
             for (int i = 0; i < 8; i++) {
                 byte b = 0;
                 for (int j = 0; j < 8; j++) {
@@ -34,8 +39,7 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
         return encryptedData;
     }
 
-    @Override
-    public byte[] decryptData(byte[] encryptedData, byte[] key1, byte[] key2, byte[] key3) throws Exception {
+    public byte[] decryptData(byte[] encryptedData, byte[] key1, byte[] key2, byte[] key3) {
         byte[] decryptedData = new byte[encryptedData.length];
         int index = 0;
         while (index < encryptedData.length) {
@@ -49,9 +53,9 @@ public class EncryptionManagerTripleDes implements EncryptionManagerInterface {
                     blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
                 }
             }
-            blockBinary = Encryption.decryption(blockBinary, key3);
-            blockBinary = Encryption.decryption(blockBinary, key2);
-            blockBinary = Encryption.decryption(blockBinary, key1);
+            blockBinary = encryptor.decryption(blockBinary, key3);
+            blockBinary = encryptor.decryption(blockBinary, key2);
+            blockBinary = encryptor.decryption(blockBinary, key1);
             for (int i = 0; i < 8; i++) {
                 byte b = 0;
                 for (int j = 0; j < 8; j++) {

@@ -56,26 +56,6 @@ class TransformationsTest {
     }
 
     @Test
-    void arrayDeCombine() {
-        byte[] array = new byte[16];
-        for (int i = 0; i < 8; i++) {
-            array[i] = (byte) (1);
-        }
-        for (int i = 8; i < 16; i++) {
-            array[i] = (byte) (0);
-        }
-        byte[][] deCombinedArray = Transformations.arrayDeCombine(array, 8);
-        assertNotNull(deCombinedArray);
-        assertEquals(2, deCombinedArray.length);
-        assertEquals(8, deCombinedArray[0].length);
-        assertEquals(8, deCombinedArray[1].length);
-        for (int i = 0; i < 8; i++) {
-            assertEquals(1, deCombinedArray[0][i]);
-            assertEquals(0, deCombinedArray[1][i]);
-        }
-    }
-
-    @Test
     void xor() {
         byte[] expandedTable = {0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1};

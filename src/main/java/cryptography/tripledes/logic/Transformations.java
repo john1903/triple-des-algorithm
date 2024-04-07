@@ -1,7 +1,5 @@
 package cryptography.tripledes.logic;
 
-import java.util.Arrays;
-
 public class Transformations {
     public static byte[] leftShift(byte[] bits, int shift) {
         byte[] shiftedBits = new byte[bits.length];
@@ -15,8 +13,6 @@ public class Transformations {
         }
         return shiftedBits;
     }
-
-
 
     public static byte[] stringToBits(String input) {
         byte[] bits = new byte[input.length() * 8];
@@ -50,13 +46,6 @@ public class Transformations {
         System.arraycopy(array1, 0, combinedArray, 0, array1.length);
         System.arraycopy(array2, 0, combinedArray, array1.length, array2.length);
         return combinedArray;
-    }
-
-    public static byte[][] arrayDeCombine(byte[] array, int length) {
-        byte[][] deCombinedArray = new byte[2][length];
-        System.arraycopy(array, 0, deCombinedArray[0], 0, length);
-        System.arraycopy(array, length, deCombinedArray[1], 0, length);
-        return deCombinedArray;
     }
 
     public static byte[] xor(byte[] array1, byte[] array2) {

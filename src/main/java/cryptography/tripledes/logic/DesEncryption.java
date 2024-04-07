@@ -1,6 +1,6 @@
 package cryptography.tripledes.logic;
 
-public class Encryption {
+public class DesEncryption implements EncryptionInterface {
     private static final int[] shiftTable = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
     private static byte[][] getKeysArray(byte[] key) {
@@ -23,7 +23,7 @@ public class Encryption {
         return Permutations.pPermutation(input);
     }
 
-    public static byte[] encryption(byte[] input, byte[] key) {
+    public byte[] encryption(byte[] input, byte[] key) {
         byte[][] inputArray = Permutations.initialPermutation(input);
         byte[] left = inputArray[0];
         byte[] right = inputArray[1];
@@ -36,7 +36,7 @@ public class Encryption {
         return Permutations.finalPermutation(left, right);
     }
 
-    public static byte[] decryption(byte[] input, byte[] key) {
+    public byte[] decryption(byte[] input, byte[] key) {
         byte[][] inputArray = Permutations.initialPermutation(input);
         byte[] left = inputArray[0];
         byte[] right = inputArray[1];
