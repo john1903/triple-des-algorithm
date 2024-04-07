@@ -36,4 +36,11 @@ public class Transformations {
         System.arraycopy(array2, 0, combinedArray, array1.length, array2.length);
         return combinedArray;
     }
+
+    public static byte[][] arrayDeCombine(byte[] array, int length) {
+        byte[][] deCombinedArray = new byte[2][length];
+        System.arraycopy(array, 0, deCombinedArray[0], 0, length);
+        System.arraycopy(array, length, deCombinedArray[1], 0, length);
+        return deCombinedArray;
+    }
 }

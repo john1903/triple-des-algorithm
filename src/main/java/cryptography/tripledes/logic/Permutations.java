@@ -177,14 +177,29 @@ public class Permutations {
         return permutedKey;
     }
 
-    public static byte[] expansionPermutation(byte[] plainRight) {
+    public static byte[] expansionPermutation(byte[] input) {
         byte[] expandedTable = new byte[48];
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 8; j++) {
                 int index = (i * 8) + j;
-                expandedTable[index] = plainRight[expansionTable[i][j] - 1];
+                expandedTable[index] = input[expansionTable[i][j] - 1];
             }
         }
         return expandedTable;
+    }
+
+    public static byte[] sBoxPermutation(byte[] input) {
+        byte[] output = new byte[32];
+        byte[] bits = new byte[4];
+        for (int i = 0; i < 8; i++) {
+            int row = input[i * 6] * 2 + input[i * 6 + 5];
+            int column = input[i * 6 + 1] * 8 + input[i * 6 + 2] * 4 + input[i * 6 + 3] * 2 + input[i * 6 + 4];
+            int value = sTables[i][row][column];
+            for (int j = 0; j < 4; j++) {
+                bits[j] = (byte) ((value >> (3 - j)) & 1);
+            }
+            System.arraycopy(bits, 0, output, i * 4, 4);
+        }
+        return output;
     }
 }
