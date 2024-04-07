@@ -30,6 +30,18 @@ public class Transformations {
         return bits;
     }
 
+    public static String bitsToString(byte[] bits) {
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < bits.length; i += 8) {
+            int num = 0;
+            for (int j = 0; j < 8; j++) {
+                num = (num << 1) | bits[i + j];
+            }
+            output.append((char) num);
+        }
+        return output.toString();
+    }
+
     public static byte[] arrayCombine(byte[] array1, byte[] array2) {
         byte[] combinedArray = new byte[array1.length + array2.length];
         System.arraycopy(array1, 0, combinedArray, 0, array1.length);
@@ -42,5 +54,13 @@ public class Transformations {
         System.arraycopy(array, 0, deCombinedArray[0], 0, length);
         System.arraycopy(array, length, deCombinedArray[1], 0, length);
         return deCombinedArray;
+    }
+
+    public static byte[] xor(byte[] array1, byte[] array2) {
+        byte[] result = new byte[array1.length];
+        for (int i = 0; i < array1.length; i++) {
+            result[i] = (byte) (array1[i] ^ array2[i]);
+        }
+        return result;
     }
 }

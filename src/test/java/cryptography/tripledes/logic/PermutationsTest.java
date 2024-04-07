@@ -247,4 +247,36 @@ class PermutationsTest {
         }
         assertArrayEquals(bits, output);
     }
+
+    @Test
+    void pTable() {
+        byte[] input = Transformations.stringToBits("0123");
+        byte[] output = Permutations.pPermutation(input);
+        assertEquals(32, output.length);
+        int index;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 16; j++) {
+                index = pTable[i][j] - 1;
+                assertEquals(input[index], output[i * 16 + j]);
+            }
+        }
+    }
+
+    @Test
+    void initialPermutationAndBack() {
+        String string = "01234567";
+        byte[] input = Transformations.stringToBits(string);
+        byte[][] result = Permutations.initialPermutation(input);
+        byte[] output = Permutations.finalPermutation(result[0], result[1]);
+        assertEquals(string, Transformations.bitsToString(output));
+    }
+
+    @Test
+    void pPermutationAndBack() {
+        String string = "0123";
+        byte[] input = Transformations.stringToBits(string);
+        byte[] output = Permutations.pPermutation(input);
+        output = Permutations.reversePPermutation(output);
+        assertEquals(string, Transformations.bitsToString(output));
+    }
 }
