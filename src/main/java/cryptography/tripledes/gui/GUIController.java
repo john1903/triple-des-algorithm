@@ -2,7 +2,10 @@ package cryptography.tripledes.gui;
 
 import cryptography.tripledes.dao.FileReader;
 import cryptography.tripledes.dao.KeyReader;
+import cryptography.tripledes.managers.EncryptionManagerCipher;
+import cryptography.tripledes.managers.EncryptionManagerInterface;
 import cryptography.tripledes.managers.KeyManager;
+import cryptography.tripledes.managers.KeyManagerInterface;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -19,13 +22,15 @@ public class GUIController {
     private TextField filePathTextField;
     @FXML
     private TextField keyPathTextField;
-    private KeyManager keyManager;
+    private KeyManagerInterface keyManager;
     private FileReader fileReader;
+    private EncryptionManagerInterface encryptionManager;
 
     @FXML
     public void initialize() {
         keyManager = new KeyManager(new KeyReader());
         fileReader = new FileReader();
+        encryptionManager = new EncryptionManagerCipher();
     }
 
     @FXML
@@ -101,8 +106,9 @@ public class GUIController {
                 validateTextField(keyPathTextField, "Enter key file path or destination path")) {
             return;
         }
+        byte[][] keys;
         try {
-            keyManager.readKeys(keyPathTextField.getText());
+            keys = keyManager.readKeys(keyPathTextField.getText());
         } catch (Exception e) {
             showMessage("Error reading keys: " + e.getMessage());
             return;
@@ -120,6 +126,12 @@ public class GUIController {
         String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
         String finalPath = directoryPath + File.separator + encryptedFileName;
         try {
+            fileContent = encryptionManager.encryptData(fileContent, keys[0], keys[1], keys[2]);
+        } catch (Exception e) {
+            showMessage("Error encrypting file: " + e.getMessage());
+            return;
+        }
+        try {
             fileReader.write(finalPath, fileContent);
         } catch (Exception e) {
             showMessage("Error writing file: " + e.getMessage());
@@ -134,8 +146,9 @@ public class GUIController {
                 validateTextField(keyPathTextField, "Enter key file path or destination path")) {
             return;
         }
+        byte[][] keys;
         try {
-            keyManager.readKeys(keyPathTextField.getText());
+            keys = keyManager.readKeys(keyPathTextField.getText());
         } catch (Exception e) {
             showMessage("Error reading keys: " + e.getMessage());
             return;
@@ -155,6 +168,12 @@ public class GUIController {
         String encryptedFileName = "decrypted_" + fileName;
         String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
         String finalPath = directoryPath + File.separator + encryptedFileName;
+        try {
+            fileContent = encryptionManager.decryptData(fileContent, keys[0], keys[1], keys[2]);
+        } catch (Exception e) {
+            showMessage("Error encrypting file: " + e.getMessage());
+            return;
+        }
         try {
             fileReader.write(finalPath, fileContent);
         } catch (Exception e) {
