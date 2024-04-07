@@ -5,7 +5,7 @@ import cryptography.tripledes.logic.KeyGenerator;
 
 import java.io.IOException;
 
-import static cryptography.tripledes.logic.KeyGenerator.hexStringToBits;
+import static cryptography.tripledes.logic.KeyGenerator.hexToBitsArray;
 
 public class KeyManager {
     KeyReader keyReader;
@@ -26,7 +26,7 @@ public class KeyManager {
         byte[][] keys = new byte[3][];
         String[] keyStrings = keyReader.readKeys(path);
         for (int i = 0; i < 3; i++) {
-            keys[i] = hexStringToBits(keyStrings[i]);
+            keys[i] = hexToBitsArray(keyStrings[i]);
         }
         return keys;
     }

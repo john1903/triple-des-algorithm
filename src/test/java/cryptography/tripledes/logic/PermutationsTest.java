@@ -103,7 +103,7 @@ class PermutationsTest {
                 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1};
         byte[] expected = {0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0,
                 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1};
-        byte[] result = Permutations.pPermutation(input);
+        byte[] result = Permutations.pBoxPermutation(input);
         for (int i = 0; i < expected.length; i++) {
             assertEquals(expected[i], result[i]);
         }

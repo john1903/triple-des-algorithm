@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static cryptography.tripledes.logic.KeyGenerator.hexStringToBits;
+import static cryptography.tripledes.logic.KeyGenerator.hexToBitsArray;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KeyManagerTest {
@@ -35,7 +35,7 @@ class KeyManagerTest {
         }
         File fileCopy = new File("src/test/java/cryptography/tripledes/managers/keys_copy.txt");
         if (fileCopy.exists()) {
-            fileCopy.delete();
+            assertTrue(fileCopy.delete());
         }
     }
 
@@ -55,7 +55,7 @@ class KeyManagerTest {
         }
         for (int i = 0; i < 3; i++) {
             assertNotNull(key[i]);
-            assertArrayEquals(key[i], hexStringToBits(keys[i]));
+            assertArrayEquals(key[i], hexToBitsArray(keys[i]));
         }
     }
 }

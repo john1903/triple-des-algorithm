@@ -20,7 +20,7 @@ public class DesEncryption implements EncryptionInterface {
         input = Permutations.expansionPermutation(input);
         input = Transformations.xor(input, key);
         input = Permutations.sBoxPermutation(input);
-        return Permutations.pPermutation(input);
+        return Permutations.pBoxPermutation(input);
     }
 
     public byte[] encryption(byte[] input, byte[] key) {

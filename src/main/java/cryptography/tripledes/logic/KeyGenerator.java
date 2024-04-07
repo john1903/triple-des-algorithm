@@ -10,7 +10,7 @@ public class KeyGenerator {
         return bits;
     }
 
-    public static byte[] hexStringToBits(String hexString) {
+    public static byte[] hexToBitsArray(String hexString) {
         byte[] bits = new byte[hexString.length() * 4];
         int index = 0;
         for (int i = 0; i < hexString.length(); i++) {

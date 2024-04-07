@@ -6,14 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TransformationsTest {
     @Test
-    void stringToBits() {
-        byte[] bits = Transformations.stringToBits("Hello");
-        assertNotNull(bits);
-        assertEquals(40, bits.length);
-        assertEquals("Hello", Transformations.bitsToString(bits));
-    }
-
-    @Test
     void leftShifts() {
         int[] shiftTable = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
         byte[][] input =

@@ -14,33 +14,6 @@ public class Transformations {
         return shiftedBits;
     }
 
-    public static byte[] stringToBits(String input) {
-        byte[] bits = new byte[input.length() * 8];
-        for (int i = 0; i < input.length(); i++) {
-            String charBits = Integer.toBinaryString(input.charAt(i));
-            int padding = 8 - charBits.length();
-            for (int j = 0; j < padding; j++) {
-                bits[i * 8 + j] = 0;
-            }
-            for (int j = 0; j < charBits.length(); j++) {
-                bits[i * 8 + padding + j] = (byte) (charBits.charAt(j) - '0');
-            }
-        }
-        return bits;
-    }
-
-    public static String bitsToString(byte[] bits) {
-        StringBuilder output = new StringBuilder();
-        for (int i = 0; i < bits.length; i += 8) {
-            int num = 0;
-            for (int j = 0; j < 8; j++) {
-                num = (num << 1) | bits[i + j];
-            }
-            output.append((char) num);
-        }
-        return output.toString();
-    }
-
     public static byte[] arrayCombine(byte[] array1, byte[] array2) {
         byte[] combinedArray = new byte[array1.length + array2.length];
         System.arraycopy(array1, 0, combinedArray, 0, array1.length);

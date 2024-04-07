@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class KeyGeneratorTest {
     @Test
     void hexStringToBits() {
-        byte[] bits = KeyGenerator.hexStringToBits(KeyGenerator.generateKey());
+        byte[] bits = KeyGenerator.hexToBitsArray(KeyGenerator.generateKey());
         assertNotNull(bits);
         assertEquals(64, bits.length);
         for (byte bit : bits) {

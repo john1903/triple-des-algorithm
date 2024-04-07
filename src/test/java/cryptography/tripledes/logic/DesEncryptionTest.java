@@ -15,16 +15,15 @@ class DesEncryptionTest {
 
     @Test
     void encryption() {
-        String keyString = "0123456789ABCDEF";
-        byte[] key = KeyGenerator.hexStringToBits(keyString);
-        byte[] text = Transformations.stringToBits("01234567");
-        byte[] encrypted = desEncryption.encryption(text, key);
+        byte[] key = { 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1,
+                1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1 };
+        byte[] input = {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1,
+                1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1};
+        byte[] encrypted = desEncryption.encryption(input, key);
         assertNotNull(encrypted);
         assertEquals(64, encrypted.length);
         System.out.println();
         byte[] decrypted = desEncryption.decryption(encrypted, key);
-        assertNotNull(decrypted);
-        assertEquals(64, decrypted.length);
-        assertEquals("01234567", Transformations.bitsToString(decrypted));
+        assertArrayEquals(input, decrypted);
     }
 }
