@@ -107,6 +107,9 @@ public class GUIController {
             return;
         }
         byte[][] keys;
+        if (!keyPathTextField.getText().endsWith(".txt")) {
+            showMessage("Key file must be a text file (.txt)", "Error", Alert.AlertType.ERROR);
+        }
         try {
             keys = keyManager.read(keyPathTextField.getText());
         } catch (Exception e) {
@@ -142,6 +145,9 @@ public class GUIController {
             return;
         }
         byte[][] keys;
+        if (!keyPathTextField.getText().endsWith(".txt")) {
+            showMessage("Key file must be a text file (.txt)", "Error", Alert.AlertType.ERROR);
+        }
         try {
             keys = keyManager.read(keyPathTextField.getText());
         } catch (Exception e) {
@@ -177,6 +183,9 @@ public class GUIController {
     public void generateKeys() {
         if (validateTextField(keyPathTextField, "Enter key file path or destination path")) {
             return;
+        }
+        if (!keyPathTextField.getText().endsWith(".txt")) {
+            showMessage("Key file must be a text file (.txt)", "Error", Alert.AlertType.ERROR);
         }
         try {
             keyManager.write(keyPathTextField.getText());
