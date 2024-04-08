@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -184,5 +185,25 @@ public class GUIController {
             return;
         }
         showMessage("Generating keys successful!", "Success", Alert.AlertType.INFORMATION);
+    }
+
+    @FXML
+    void readKeyFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Key File");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            keyPathTextField.setText(selectedFile.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    void readDataFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Data File");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            filePathTextField.setText(selectedFile.getAbsolutePath());
+        }
     }
 }
