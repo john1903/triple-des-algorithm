@@ -29,6 +29,10 @@
     -fx-background-color: #45a049;
 }
 
+.file-button:hover {
+    -fx-background-color: #45a049;
+}
+
 .status-label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
