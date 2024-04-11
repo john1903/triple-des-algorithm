@@ -4,7 +4,7 @@ Author: John Gluzniewicz
 
 ## Description
 
-Java-TripleDES is a Java repository that contains an implementation of the Triple Data Encryption Standard (DES) algorithm, along with unit tests and a sample JavaFX project demonstrating its usage.
+This is a Java repository that contains an implementation of the Triple Data Encryption Standard (DES) algorithm, along with unit tests and a sample JavaFX project demonstrating its usage.
 
 Triple DES, also known as TDES or TDEA, is a symmetric-key block cipher that applies the DES algorithm three times to each data block for enhanced security.
 
