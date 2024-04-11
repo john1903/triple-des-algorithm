@@ -13,8 +13,6 @@ public class GUI extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("GUI-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 350);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(
-                "/cryptography/tripledes/gui/style.css")).toExternalForm());
         stage.setTitle("Encryption/Decryption Tool");
         stage.setScene(scene);
         stage.setResizable(false);
