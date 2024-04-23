@@ -3,16 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>cryptography</groupId>
+    <groupId>me.jangluzniewicz.tripledes</groupId>
     <artifactId>TripleDes</artifactId>
     <version>1.0</version>
     <name>TripleDes</name>
     <description>TripleDes encryption and decryption algorithm</description>
     <licenses>
         <license>
-            <name>Creative Commons Attribution-ShareAlike v4.0</name>
-            <url>https://creativecommons.org/licenses/by-sa/4.0/</url>
+            <name>Apache License Version 2.0</name>
+            <url>https://www.apache.org/licenses/</url>
         </license>
     </licenses>
     <properties>
@@ -65,7 +64,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>cryptography.tripledes/cryptography.tripledes.gui.GUI</mainClass>
+                            <mainClass>me.jangluzniewicz.tripledes.gui.GUI</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

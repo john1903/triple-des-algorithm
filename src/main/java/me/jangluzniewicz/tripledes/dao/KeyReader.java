@@ -1,0 +1,33 @@
+package me.jangluzniewicz.tripledes.dao;
+
+import java.io.*;
+
+public class KeyReader implements KeyReaderInterface {
+    @Override
+    public String[] read(String path) throws IOException {
+        String[] keys = new String[3];
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
+            String line;
+            int count = 0;
+            while ((line = reader.readLine()) != null) {
+                keys[count] = line;
+                count++;
+            }
+        } catch (IOException e) {
+            throw new IOException("Error reading keys from file: " + e.getMessage());
+        }
+        return keys;
+    }
+
+    @Override
+    public void write(String path, String[] keys) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path)))) {
+            for (String key : keys) {
+                writer.write(key);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new IOException("Error writing keys to file: " + e.getMessage());
+        }
+    }
+}

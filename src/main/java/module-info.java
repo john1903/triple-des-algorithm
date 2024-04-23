@@ -1,6 +1,6 @@
-module cryptography.tripledes {
+module me.jangluzniewicz.tripledes {
     requires javafx.controls;
     requires javafx.fxml;
-    exports cryptography.tripledes.gui;
-    opens cryptography.tripledes.gui to javafx.fxml;
+    opens me.jangluzniewicz.tripledes.gui to javafx.fxml;
+    exports me.jangluzniewicz.tripledes.gui;
 }
