@@ -33,7 +33,3 @@ Triple DES, also known as TDES or TDEA, is a symmetric-key block cipher that app
    - After a while, a new decrypted file will be created in the original location with the suffix "decrypted".
 
 Follow these steps to securely encrypt and decrypt your files using the Triple DES algorithm implemented in this Java program.
-
-## License
-
-This project is licensed under the [Creative Commons Attribution-ShareAlike v4.0 License](https://creativecommons.org/licenses/by-sa/4.0/).
