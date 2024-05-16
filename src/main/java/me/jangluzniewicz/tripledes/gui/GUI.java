@@ -11,7 +11,7 @@ public class GUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("GUI-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 350);
+        Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Encryption/Decryption Tool");
         stage.setScene(scene);
         stage.setResizable(false);

@@ -1,11 +1,11 @@
 package me.jangluzniewicz.tripledes.gui;
 
 import me.jangluzniewicz.tripledes.dao.FileReader;
-import me.jangluzniewicz.tripledes.dao.KeyReader;
 import me.jangluzniewicz.tripledes.logic.DesEncryption;
 import me.jangluzniewicz.tripledes.logic.KeyGenerator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
@@ -23,16 +23,24 @@ public class GUIController {
     @FXML
     private TextField filePathTextField;
     @FXML
-    private TextField keyPathTextField;
-    private KeyManager keyManager;
+    private TextField key1;
+    @FXML
+    private TextField key2;
+    @FXML
+    private TextField key3;
     private FileManager fileManager;
+    private KeyManager keyManager;
     private EncryptionManager encryptionManager;
 
     @FXML
     public void initialize() {
-        keyManager = new KeyManager(new KeyReader(), new KeyGenerator());
+        keyManager = new KeyManager(new KeyGenerator());
         fileManager = new FileManager(new FileReader());
         encryptionManager = new EncryptionManager(new DesEncryption());
+
+        addKeyValidation(key1);
+        addKeyValidation(key2);
+        addKeyValidation(key3);
     }
 
     @FXML
@@ -49,26 +57,6 @@ public class GUIController {
         if (event.getGestureSource() != filePathTextField && event.getDragboard().hasFiles()) {
             File file = event.getDragboard().getFiles().getFirst();
             filePathTextField.setText(file.getAbsolutePath());
-            success = true;
-        }
-        event.setDropCompleted(success);
-        event.consume();
-    }
-
-    @FXML
-    public void onDragOverKeyPath(DragEvent event) {
-        if (event.getGestureSource() != keyPathTextField && event.getDragboard().hasFiles()) {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-        }
-        event.consume();
-    }
-
-    @FXML
-    public void onDragDroppedKeyPath(DragEvent event) {
-        boolean success = false;
-        if (event.getGestureSource() != keyPathTextField && event.getDragboard().hasFiles()) {
-            File file = event.getDragboard().getFiles().getFirst();
-            keyPathTextField.setText(file.getAbsolutePath());
             success = true;
         }
         event.setDropCompleted(success);
@@ -102,23 +90,51 @@ public class GUIController {
         }
     }
 
+    private File showSaveFileDialog(String title) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+        return fileChooser.showSaveDialog(null);
+    }
+
+    private void addKeyValidation(TextField keyField) {
+        ChangeListener<String> listener = (observable, oldValue, newValue) -> {
+            if (newValue.length() > 32) {
+                keyField.setText(oldValue);
+            } else {
+                keyField.setText(newValue.toLowerCase().replaceAll("[^0-9a-f]", ""));
+            }
+            keyField.positionCaret(newValue.length());
+        };
+        keyField.textProperty().addListener(listener);
+        keyField.getProperties().put("listener", listener);
+    }
+
+    private void removeKeyValidation(TextField keyField) {
+        ChangeListener<String> listener = (ChangeListener<String>) keyField.getProperties().get("listener");
+        if (listener != null) {
+            keyField.textProperty().removeListener(listener);
+        }
+    }
+
     @FXML
     public void encryptFile() {
         if (validateTextField(filePathTextField, "Enter file path") ||
-                validateTextField(keyPathTextField, "Enter key file path or destination path")) {
+                validateTextField(key1, "First key") || validateTextField(key2, "Second key") ||
+                validateTextField(key3, "Third key")) {
             return;
         }
-        byte[][] keys;
-        if (!keyPathTextField.getText().endsWith(".txt")) {
-            showMessage("Key file must be a text file (.txt)", "Error", Alert.AlertType.ERROR);
+
+        if (!isValidHexKey(key1.getText()) || !isValidHexKey(key2.getText()) || !isValidHexKey(key3.getText())) {
+            showMessage("Keys must be 16-character hexadecimal strings!", "Invalid Key", Alert.AlertType.ERROR);
             return;
         }
-        try {
-            keys = keyManager.read(keyPathTextField.getText());
-        } catch (Exception e) {
-            showMessage("Error reading keys!", "Error", Alert.AlertType.ERROR);
+
+        File saveFile = showSaveFileDialog("Save Encrypted File");
+        if (saveFile == null) {
+            showMessage("File save location not chosen!", "Warning", Alert.AlertType.WARNING);
             return;
         }
+
         byte[] fileContent;
         try {
             fileContent = fileManager.read(filePathTextField.getText());
@@ -126,14 +142,12 @@ public class GUIController {
             showMessage("Error reading file!", "Error", Alert.AlertType.ERROR);
             return;
         }
-        String path = filePathTextField.getText();
-        String fileName = path.substring(path.lastIndexOf(File.separator) + 1);
-        String encryptedFileName = "encrypted_" + fileName;
-        String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
-        String finalPath = directoryPath + File.separator + encryptedFileName;
-        fileContent = encryptionManager.encrypt(fileContent, keys[0], keys[1], keys[2]);
+
+        fileContent = encryptionManager.encrypt(fileContent, keyManager.hexStringToBits(key1.getText()),
+                keyManager.hexStringToBits(key2.getText()), keyManager.hexStringToBits(key3.getText()));
+
         try {
-            fileManager.write(finalPath, fileContent);
+            fileManager.write(saveFile.getAbsolutePath(), fileContent);
         } catch (Exception e) {
             showMessage("Error writing file!", "Error", Alert.AlertType.ERROR);
             return;
@@ -144,20 +158,22 @@ public class GUIController {
     @FXML
     public void decryptFile() {
         if (validateTextField(filePathTextField, "Enter file path") ||
-                validateTextField(keyPathTextField, "Enter key file path or destination path")) {
+                validateTextField(key1, "First key") || validateTextField(key2, "Second key") ||
+                validateTextField(key3, "Third key")) {
             return;
         }
-        byte[][] keys;
-        if (!keyPathTextField.getText().endsWith(".txt")) {
-            showMessage("Key file must be a text file (.txt)", "Error", Alert.AlertType.ERROR);
+
+        if (!isValidHexKey(key1.getText()) || !isValidHexKey(key2.getText()) || !isValidHexKey(key3.getText())) {
+            showMessage("Keys must be 16-character hexadecimal strings!", "Invalid Key", Alert.AlertType.ERROR);
             return;
         }
-        try {
-            keys = keyManager.read(keyPathTextField.getText());
-        } catch (Exception e) {
-            showMessage("Error reading keys!", "Error", Alert.AlertType.ERROR);
+
+        File saveFile = showSaveFileDialog("Save Decrypted File");
+        if (saveFile == null) {
+            showMessage("File save location not chosen!", "Warning", Alert.AlertType.WARNING);
             return;
         }
+
         byte[] fileContent;
         try {
             fileContent = fileManager.read(filePathTextField.getText());
@@ -165,17 +181,12 @@ public class GUIController {
             showMessage("Error reading file!", "Error", Alert.AlertType.ERROR);
             return;
         }
-        String path = filePathTextField.getText();
-        String fileName = path.substring(path.lastIndexOf(File.separator) + 1);
-        if (fileName.startsWith("encrypted_")) {
-            fileName = fileName.substring(10);
-        }
-        String encryptedFileName = "decrypted_" + fileName;
-        String directoryPath = path.substring(0, path.lastIndexOf(File.separator));
-        String finalPath = directoryPath + File.separator + encryptedFileName;
-        fileContent = encryptionManager.decrypt(fileContent, keys[0], keys[1], keys[2]);
+
+        fileContent = encryptionManager.decrypt(fileContent, keyManager.hexStringToBits(key1.getText()),
+                keyManager.hexStringToBits(key2.getText()), keyManager.hexStringToBits(key3.getText()));
+
         try {
-            fileManager.write(finalPath, fileContent);
+            fileManager.write(saveFile.getAbsolutePath(), fileContent);
         } catch (Exception e) {
             showMessage("Error writing file!", "Error", Alert.AlertType.ERROR);
             return;
@@ -185,30 +196,35 @@ public class GUIController {
 
     @FXML
     public void generateKeys() {
-        if (validateTextField(keyPathTextField, "Enter key file path or destination path")) {
+        File saveFile = showSaveFileDialog("Save Generated Keys");
+        if (saveFile == null) {
+            showMessage("File save location not chosen!", "Warning", Alert.AlertType.WARNING);
             return;
         }
-        if (!keyPathTextField.getText().endsWith(".txt")) {
-            showMessage("Key file must be a text file (.txt)", "Error", Alert.AlertType.ERROR);
-            return;
-        }
+
+        removeKeyValidation(key1);
+        removeKeyValidation(key2);
+        removeKeyValidation(key3);
+
+        key1.setText(keyManager.bitsToHexString(keyManager.generateKey()));
+        key2.setText(keyManager.bitsToHexString(keyManager.generateKey()));
+        key3.setText(keyManager.bitsToHexString(keyManager.generateKey()));
+
+        addKeyValidation(key1);
+        addKeyValidation(key2);
+        addKeyValidation(key3);
+
+        String keys = "Key 1: " + key1.getText() + "\n" +
+                "Key 2: " + key2.getText() + "\n" +
+                "Key 3: " + key3.getText() + "\n";
+
         try {
-            keyManager.write(keyPathTextField.getText());
+            fileManager.write(saveFile.getAbsolutePath(), keys.getBytes());
         } catch (Exception e) {
-            showMessage("Error generating keys!", "Error", Alert.AlertType.ERROR);
+            showMessage("Error writing keys to file!", "Error", Alert.AlertType.ERROR);
             return;
         }
         showMessage("Generating keys successful!", "Success", Alert.AlertType.INFORMATION);
-    }
-
-    @FXML
-    void readKeyFile() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose Key File");
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile != null) {
-            keyPathTextField.setText(selectedFile.getAbsolutePath());
-        }
     }
 
     @FXML
@@ -219,5 +235,9 @@ public class GUIController {
         if (selectedFile != null) {
             filePathTextField.setText(selectedFile.getAbsolutePath());
         }
+    }
+
+    private boolean isValidHexKey(String key) {
+        return key != null && key.length() == 32 && key.matches("[0-9a-f]{32}");
     }
 }
