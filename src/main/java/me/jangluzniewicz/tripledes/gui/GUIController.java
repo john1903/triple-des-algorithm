@@ -92,9 +92,10 @@ public class GUIController {
         }
     }
 
-    private File showSaveFileDialog(String title) {
+    private File showSaveFileDialog(String title, String initialFileName) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
+        fileChooser.setInitialFileName(initialFileName);
         return fileChooser.showSaveDialog(null);
     }
 
@@ -131,7 +132,9 @@ public class GUIController {
             return;
         }
 
-        File saveFile = showSaveFileDialog("Save Encrypted File");
+        String inputFilePath = filePathTextField.getText();
+        String fileExtension = getFileExtension(inputFilePath);
+        File saveFile = showSaveFileDialog("Save Encrypted File", "encrypted" + fileExtension);
         if (saveFile == null) {
             showMessage("File save location not chosen!", "Warning", Alert.AlertType.WARNING);
             return;
@@ -139,7 +142,7 @@ public class GUIController {
 
         BitSet fileContent;
         try {
-            fileContent = fileManager.read(filePathTextField.getText());
+            fileContent = fileManager.read(inputFilePath);
         } catch (Exception e) {
             showMessage("Error reading file!", "Error", Alert.AlertType.ERROR);
             return;
@@ -147,7 +150,6 @@ public class GUIController {
 
         fileContent = encryptionManager.encrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
                 keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
-        encryptionManager.shutdown();
         try {
             fileManager.write(saveFile.getAbsolutePath(), fileContent);
         } catch (Exception e) {
@@ -156,6 +158,7 @@ public class GUIController {
         }
         showMessage("Encrypting successful!", "Success", Alert.AlertType.INFORMATION);
     }
+
 
     @FXML
     public void decryptFile() throws ExecutionException, InterruptedException {
@@ -170,7 +173,9 @@ public class GUIController {
             return;
         }
 
-        File saveFile = showSaveFileDialog("Save Decrypted File");
+        String inputFilePath = filePathTextField.getText();
+        String fileExtension = getFileExtension(inputFilePath);
+        File saveFile = showSaveFileDialog("Save Decrypted File", "decrypted" + fileExtension);
         if (saveFile == null) {
             showMessage("File save location not chosen!", "Warning", Alert.AlertType.WARNING);
             return;
@@ -178,7 +183,7 @@ public class GUIController {
 
         BitSet fileContent;
         try {
-            fileContent = fileManager.read(filePathTextField.getText());
+            fileContent = fileManager.read(inputFilePath);
         } catch (Exception e) {
             showMessage("Error reading file!", "Error", Alert.AlertType.ERROR);
             return;
@@ -186,7 +191,6 @@ public class GUIController {
 
         fileContent = encryptionManager.decrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
                 keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
-        encryptionManager.shutdown();
         try {
             fileManager.write(saveFile.getAbsolutePath(), fileContent);
         } catch (Exception e) {
@@ -198,7 +202,7 @@ public class GUIController {
 
     @FXML
     public void generateKeys() {
-        File saveFile = showSaveFileDialog("Save Generated Keys");
+        File saveFile = showSaveFileDialog("Save Generated Keys", "keys.txt");
         if (saveFile == null) {
             showMessage("File save location not chosen!", "Warning", Alert.AlertType.WARNING);
             return;
@@ -221,12 +225,20 @@ public class GUIController {
                 "Key 3: " + key3.getText() + "\n";
 
         try {
-            fileManager.write(saveFile.getAbsolutePath(), BitSet.valueOf(keys.getBytes()));
+            fileManager.write(saveFile.getAbsolutePath(), keys.getBytes());
         } catch (Exception e) {
             showMessage("Error writing keys to file!", "Error", Alert.AlertType.ERROR);
             return;
         }
         showMessage("Generating keys successful!", "Success", Alert.AlertType.INFORMATION);
+    }
+
+    private String getFileExtension(String filePath) {
+        int dotIndex = filePath.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < filePath.length() - 1) {
+            return filePath.substring(dotIndex);
+        }
+        return "";
     }
 
     @FXML

@@ -34,7 +34,7 @@
     </VBox>
 
     <VBox alignment="CENTER" spacing="10">
-        <Label styleClass="info-label" text="Enter 128 bits keys in hex:" />
+        <Label styleClass="info-label" text="Enter 32 characters keys in hex:" />
         <HBox alignment="CENTER" spacing="5">
             <TextField fx:id="key1" promptText="First key" styleClass="text-field" prefWidth="150.0" />
             <TextField fx:id="key2" promptText="Second key" styleClass="text-field" prefWidth="150.0" />

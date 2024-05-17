@@ -21,6 +21,10 @@ public class FileManager {
         fileReader.write(path, data);
     }
 
+    public void write(String path, byte[] content) throws Exception {
+        fileReader.write(path, content);
+    }
+
     private BitSet fromByteArray(byte[] bytes) {
         BitSet bits = new BitSet(bytes.length * 8);
         for (int i = 0; i < bytes.length * 8; i++) {
