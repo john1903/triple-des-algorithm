@@ -19,6 +19,7 @@ import me.jangluzniewicz.tripledes.managers.KeyManager;
 
 import java.io.File;
 import java.util.BitSet;
+import java.util.concurrent.ExecutionException;
 
 public class GUIController {
     @FXML
@@ -118,7 +119,7 @@ public class GUIController {
     }
 
     @FXML
-    public void encryptFile() {
+    public void encryptFile() throws ExecutionException, InterruptedException {
         if (validateTextField(filePathTextField, "Enter file path") ||
                 validateTextField(key1, "First key") || validateTextField(key2, "Second key") ||
                 validateTextField(key3, "Third key")) {
@@ -146,7 +147,7 @@ public class GUIController {
 
         fileContent = encryptionManager.encrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
                 keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
-
+        encryptionManager.shutdown();
         try {
             fileManager.write(saveFile.getAbsolutePath(), fileContent);
         } catch (Exception e) {
@@ -157,7 +158,7 @@ public class GUIController {
     }
 
     @FXML
-    public void decryptFile() {
+    public void decryptFile() throws ExecutionException, InterruptedException {
         if (validateTextField(filePathTextField, "Enter file path") ||
                 validateTextField(key1, "First key") || validateTextField(key2, "Second key") ||
                 validateTextField(key3, "Third key")) {
@@ -185,7 +186,7 @@ public class GUIController {
 
         fileContent = encryptionManager.decrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
                 keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
-
+        encryptionManager.shutdown();
         try {
             fileManager.write(saveFile.getAbsolutePath(), fileContent);
         } catch (Exception e) {
