@@ -1,5 +1,7 @@
 package me.jangluzniewicz.tripledes.logic;
 
+import java.util.BitSet;
+
 public class Permutations {
     private static final int[][] initialPermutationTable = {
             {58, 50, 42, 34, 26, 18, 10, 2},
@@ -42,7 +44,7 @@ public class Permutations {
             {34, 53, 46, 42, 50, 36, 29, 32}
     };
 
-    private static final int[][] expansionTable = {
+    private static final int[][] extensionTable = {
             {32, 1, 2, 3, 4, 5, 4, 5},
             {6, 7, 8, 9, 8, 9, 10, 11},
             {12, 13, 12, 13, 14, 15, 16, 17},
@@ -107,101 +109,103 @@ public class Permutations {
             {2, 8, 24, 14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25}
     };
 
-    public static byte[][] initialPermutation(byte[] input) {
-        byte[] bitSet = new byte[64];
+    public static BitSet[] initialPermutation(BitSet input) {
+        BitSet bitSet = new BitSet(64);
         int index;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 index = initialPermutationTable[i][j] - 1;
-                bitSet[i * 8 + j] = input[index];
+                bitSet.set(i * 8 + j, input.get(index));
             }
         }
-        byte[] left = new byte[32];
-        byte[] right = new byte[32];
+        BitSet left = new BitSet(32);
+        BitSet right = new BitSet(32);
         for (int i = 0; i < 32; i++) {
-            left[i] = bitSet[i];
-            right[i] = bitSet[i + 32];
+            left.set(i, bitSet.get(i));
+            right.set(i, bitSet.get(i + 32));
         }
-        return new byte[][]{left, right};
+        return new BitSet[]{left, right};
     }
 
-    public static byte[] finalPermutation(byte[] left, byte[] right) {
-        byte[] combined = new byte[64];
+    public static BitSet finalPermutation(BitSet left, BitSet right) {
+        BitSet combined = new BitSet(64);
         for (int i = 0; i < 32; i++) {
-            combined[i] = left[i];
-            combined[i + 32] = right[i];
+            combined.set(i, left.get(i));
+            combined.set(i + 32, right.get(i));
         }
-        byte[] output = new byte[64];
+        BitSet output = new BitSet(64);
         int index;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 index = finalPermutationTable[i][j] - 1;
-                output[i * 8 + j] = combined[index];
+                output.set(i * 8 + j, combined.get(index));
             }
         }
         return output;
     }
 
-    public static byte[][] permutedChoice1(byte[] key) {
+    public static BitSet[] permutedChoice1(BitSet key) {
         int index;
-        byte[] permutedBits = new byte[56];
+        BitSet permutedBits = new BitSet(56);
         for (int i = 0; i < 7; i++) {
             for (int j = 0; j < 8; j++) {
                 index = permutedChoice1Table[i][j] - 1;
-                permutedBits[i * 8 + j] = key[index];
+                permutedBits.set(i * 8 + j, key.get(index));
             }
         }
-        byte[][] bitsArray = new byte[2][28];
+        BitSet left = new BitSet(28);
+        BitSet right = new BitSet(28);
         for (int i = 0; i < 28; i++) {
-            bitsArray[0][i] = permutedBits[i];
-            bitsArray[1][i] = permutedBits[i + 28];
+            left.set(i, permutedBits.get(i));
+            right.set(i, permutedBits.get(i + 28));
         }
-        return bitsArray;
+        return new BitSet[]{left, right};
     }
 
-    public static byte[] permutedChoice2(byte[] key) {
-        byte[] permutedKey = new byte[48];
-        int tableIndex;
+    public static BitSet permutedChoice2(BitSet key) {
+        BitSet permutedKey = new BitSet(48);
+        int index;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 8; j++) {
-                tableIndex = permutedChoice2Table[i][j] - 1;
-                permutedKey[i * 8 + j] = key[tableIndex];
+                index = permutedChoice2Table[i][j] - 1;
+                permutedKey.set(i * 8 + j, key.get(index));
             }
         }
         return permutedKey;
     }
 
-    public static byte[] expansionPermutation(byte[] input) {
-        byte[] expandedTable = new byte[48];
+    public static BitSet extensionPermutation(BitSet input) {
+        BitSet expandedTable = new BitSet(48);
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 8; j++) {
                 int index = (i * 8) + j;
-                expandedTable[index] = input[expansionTable[i][j] - 1];
+                expandedTable.set(index, input.get(extensionTable[i][j] - 1));
             }
         }
         return expandedTable;
     }
 
-    public static byte[] sBoxPermutation(byte[] input) {
-        byte[] output = new byte[32];
-        byte[] bits = new byte[4];
+    public static BitSet sBoxSubstitution(BitSet input) {
+        BitSet output = new BitSet(32);
         for (int i = 0; i < 8; i++) {
-            int row = input[i * 6] * 2 + input[i * 6 + 5];
-            int column = input[i * 6 + 1] * 8 + input[i * 6 + 2] * 4 + input[i * 6 + 3] * 2 + input[i * 6 + 4];
+            int row = (input.get(i * 6) ? 1 : 0) * 2 + (input.get(i * 6 + 5) ? 1 : 0);
+            int column = (input.get(i * 6 + 1) ? 1 : 0) * 8
+                    + (input.get(i * 6 + 2) ? 1 : 0) * 4
+                    + (input.get(i * 6 + 3) ? 1 : 0) * 2
+                    + (input.get(i * 6 + 4) ? 1 : 0);
             int value = sTables[i][row][column];
             for (int j = 0; j < 4; j++) {
-                bits[j] = (byte) ((value >> (3 - j)) & 1);
+                output.set(i * 4 + j, ((value >> (3 - j)) & 1) == 1);
             }
-            System.arraycopy(bits, 0, output, i * 4, 4);
         }
         return output;
     }
 
-    public static byte[] pBoxPermutation(byte[] input) {
-        byte[] output = new byte[32];
+    public static BitSet pBoxPermutation(BitSet input) {
+        BitSet output = new BitSet(32);
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 16; j++) {
-                output[i * 16 + j] = input[pTable[i][j] - 1];
+                output.set(i * 16 + j, input.get(pTable[i][j] - 1));
             }
         }
         return output;

@@ -1,5 +1,7 @@
 package me.jangluzniewicz.tripledes.logic;
 
+import java.util.BitSet;
+
 public interface KeyGeneratorInterface {
-    byte[] generateKey();
+    BitSet generateKey();
 }

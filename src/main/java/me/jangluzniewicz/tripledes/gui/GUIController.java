@@ -18,6 +18,7 @@ import me.jangluzniewicz.tripledes.managers.FileManager;
 import me.jangluzniewicz.tripledes.managers.KeyManager;
 
 import java.io.File;
+import java.util.BitSet;
 
 public class GUIController {
     @FXML
@@ -135,7 +136,7 @@ public class GUIController {
             return;
         }
 
-        byte[] fileContent;
+        BitSet fileContent;
         try {
             fileContent = fileManager.read(filePathTextField.getText());
         } catch (Exception e) {
@@ -143,8 +144,8 @@ public class GUIController {
             return;
         }
 
-        fileContent = encryptionManager.encrypt(fileContent, keyManager.hexStringToBits(key1.getText()),
-                keyManager.hexStringToBits(key2.getText()), keyManager.hexStringToBits(key3.getText()));
+        fileContent = encryptionManager.encrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
+                keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
 
         try {
             fileManager.write(saveFile.getAbsolutePath(), fileContent);
@@ -174,7 +175,7 @@ public class GUIController {
             return;
         }
 
-        byte[] fileContent;
+        BitSet fileContent;
         try {
             fileContent = fileManager.read(filePathTextField.getText());
         } catch (Exception e) {
@@ -182,8 +183,8 @@ public class GUIController {
             return;
         }
 
-        fileContent = encryptionManager.decrypt(fileContent, keyManager.hexStringToBits(key1.getText()),
-                keyManager.hexStringToBits(key2.getText()), keyManager.hexStringToBits(key3.getText()));
+        fileContent = encryptionManager.decrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
+                keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
 
         try {
             fileManager.write(saveFile.getAbsolutePath(), fileContent);
@@ -219,7 +220,7 @@ public class GUIController {
                 "Key 3: " + key3.getText() + "\n";
 
         try {
-            fileManager.write(saveFile.getAbsolutePath(), keys.getBytes());
+            fileManager.write(saveFile.getAbsolutePath(), BitSet.valueOf(keys.getBytes()));
         } catch (Exception e) {
             showMessage("Error writing keys to file!", "Error", Alert.AlertType.ERROR);
             return;

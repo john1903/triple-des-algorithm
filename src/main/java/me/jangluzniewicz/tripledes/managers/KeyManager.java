@@ -2,6 +2,8 @@ package me.jangluzniewicz.tripledes.managers;
 
 import me.jangluzniewicz.tripledes.logic.KeyGeneratorInterface;
 
+import java.util.BitSet;
+
 public class KeyManager {
     private final KeyGeneratorInterface generator;
 
@@ -9,36 +11,32 @@ public class KeyManager {
         this.generator = generator;
     }
 
-    public byte[] generateKey() {
+    public BitSet generateKey() {
         return generator.generateKey();
     }
 
-    public String bitsToHexString(byte[] bits) {
-        byte[] bytes = new byte[bits.length / 8];
-        for (int i = 0; i < bits.length; i += 8) {
+    public String bitsToHexString(BitSet bits) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bits.length(); i += 8) {
             byte b = 0;
             for (int j = 0; j < 8; j++) {
-                b = (byte) (b << 1);
-                b = (byte) (b | bits[i + j]);
+                if (bits.get(i + j)) {
+                    b |= (byte) (1 << (7 - j));
+                }
             }
-            bytes[i / 8] = b;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
     }
 
-    public byte[] hexStringToBits(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
+    public BitSet hexStringToBitSet(String hex) {
+        BitSet bits = new BitSet(hex.length() * 4);
         for (int i = 0; i < hex.length(); i += 2) {
-            bytes[i / 2] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);
-        }
-        byte[] bits = new byte[bytes.length * 8];
-        for (int i = 0; i < bytes.length; i++) {
+            byte b = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);
             for (int j = 0; j < 8; j++) {
-                bits[i * 8 + j] = (byte) ((bytes[i] >> (7 - j)) & 1);
+                if ((b & (1 << (7 - j))) > 0) {
+                    bits.set((i / 2) * 8 + j);
+                }
             }
         }
         return bits;

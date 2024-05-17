@@ -1,31 +1,39 @@
 package me.jangluzniewicz.tripledes.logic;
 
+import java.util.BitSet;
+
 public class Transformations {
-    public static byte[] leftShift(byte[] bits, int shift) {
-        byte[] shiftedBits = new byte[bits.length];
-        int number = 0;
-        for (byte bit : bits) {
-            number = (number << 1) | bit;
-        }
-        number = (number << shift) | (number >> (bits.length - shift));
-        for (int i = 0; i < bits.length; i++) {
-            shiftedBits[i] = (byte) ((number >> (bits.length - 1 - i)) & 1);
+    public static BitSet leftShift(BitSet bits, int shift) {
+        int size = 28;
+        BitSet shiftedBits = new BitSet(size);
+        for (int i = 0; i < size; i++) {
+            boolean bit = bits.get((i + shift) % size);
+            shiftedBits.set(i, bit);
         }
         return shiftedBits;
     }
 
-    public static byte[] arrayCombine(byte[] array1, byte[] array2) {
-        byte[] combinedArray = new byte[array1.length + array2.length];
-        System.arraycopy(array1, 0, combinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, combinedArray, array1.length, array2.length);
-        return combinedArray;
+    public static BitSet arrayCombine(BitSet bitSet1, BitSet bitSet2) {
+        BitSet combinedBitSet = new BitSet(bitSet1.length() + bitSet2.length());
+
+        for (int i = 0; i < bitSet1.length(); i++) {
+            if (bitSet1.get(i)) {
+                combinedBitSet.set(i);
+            }
+        }
+
+        for (int i = 0; i < bitSet2.length(); i++) {
+            if (bitSet2.get(i)) {
+                combinedBitSet.set(bitSet1.length() + i);
+            }
+        }
+
+        return combinedBitSet;
     }
 
-    public static byte[] xor(byte[] array1, byte[] array2) {
-        byte[] result = new byte[array1.length];
-        for (int i = 0; i < array1.length; i++) {
-            result[i] = (byte) (array1[i] ^ array2[i]);
-        }
+    public static BitSet xor(BitSet bitSet1, BitSet bitSet2) {
+        BitSet result = (BitSet) bitSet1.clone();
+        result.xor(bitSet2);
         return result;
     }
 }

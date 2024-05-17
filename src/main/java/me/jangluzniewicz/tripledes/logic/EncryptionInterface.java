@@ -1,7 +1,9 @@
 package me.jangluzniewicz.tripledes.logic;
 
-public interface EncryptionInterface {
-     byte[] encryption(byte[] input, byte[] key);
+import java.util.BitSet;
 
-     byte[] decryption(byte[] input, byte[] key);
+public interface EncryptionInterface {
+     BitSet encryption(BitSet input, BitSet key);
+
+     BitSet decryption(BitSet input, BitSet key);
 }

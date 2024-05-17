@@ -2,67 +2,73 @@ package me.jangluzniewicz.tripledes.managers;
 
 import me.jangluzniewicz.tripledes.logic.EncryptionInterface;
 
-import java.util.Arrays;
+import java.util.BitSet;
 
 public class EncryptionManager {
     private final EncryptionInterface encryptor;
-    private final int blockSize = 8;
+    private final int blockSize = 64;
 
     public EncryptionManager(EncryptionInterface encryptor) {
         this.encryptor = encryptor;
     }
 
-    private void processBlock(byte[] block, byte[] key1, byte[] key2, byte[] key3, boolean isEncrypting) {
-        byte[] blockBinary = new byte[blockSize * 8];
-        for (int i = 0; i < blockSize; i++) {
-            byte b = block[i];
-            for (int j = 7; j >= 0; j--) {
-                blockBinary[i * 8 + (7 - j)] = (byte) ((b >> j) & 1);
-            }
-        }
+    private BitSet processBlock(BitSet block, BitSet key1, BitSet key2, BitSet key3, boolean isEncrypting) {
         if (isEncrypting) {
-            blockBinary = encryptor.encryption(blockBinary, key1);
-            blockBinary = encryptor.encryption(blockBinary, key2);
-            blockBinary = encryptor.encryption(blockBinary, key3);
+            block = encryptor.encryption(block, key1);
+            block = encryptor.encryption(block, key2);
+            block = encryptor.encryption(block, key3);
         } else {
-            blockBinary = encryptor.decryption(blockBinary, key3);
-            blockBinary = encryptor.decryption(blockBinary, key2);
-            blockBinary = encryptor.decryption(blockBinary, key1);
+            block = encryptor.decryption(block, key3);
+            block = encryptor.decryption(block, key2);
+            block = encryptor.decryption(block, key1);
         }
-        for (int i = 0; i < blockSize; i++) {
-            byte b = 0;
-            for (int j = 0; j < 8; j++) {
-                b |= (byte) (blockBinary[i * 8 + j] << (7 - j));
-            }
-            block[i] = b;
-        }
+        return block;
     }
 
-    public byte[] encrypt(byte[] data, byte[] key1, byte[] key2, byte[] key3) {
-        int paddingLength = blockSize - (data.length % blockSize);
-        byte[] paddedData = Arrays.copyOf(data, data.length + paddingLength);
-        Arrays.fill(paddedData, data.length, paddedData.length, (byte) paddingLength);
-        byte[] encryptedData = new byte[paddedData.length];
-        int index = 0;
-        while (index < paddedData.length) {
-            byte[] block = Arrays.copyOfRange(paddedData, index, index + blockSize);
-            processBlock(block, key1, key2, key3, true);
-            System.arraycopy(block, 0, encryptedData, index, blockSize);
-            index += blockSize;
+    public BitSet encrypt(BitSet data, BitSet key1, BitSet key2, BitSet key3) {
+        int length = data.length();
+        int paddingLength = blockSize - (length % blockSize);
+        if (paddingLength == blockSize) {
+            paddingLength = 0; // No padding needed if already aligned
+        }
+        BitSet paddedData = (BitSet) data.clone();
+        // Dopełnianie zerami
+        for (int i = 0; i < paddingLength; i++) {
+            paddedData.clear(length + i);
+        }
+
+        BitSet encryptedData = new BitSet(paddedData.length());
+        for (int index = 0; index < paddedData.length(); index += blockSize) {
+            BitSet block = paddedData.get(index, index + blockSize);
+            block = processBlock(block, key1, key2, key3, true);
+            for (int i = 0; i < blockSize; i++) {
+                if (block.get(i)) {
+                    encryptedData.set(index + i);
+                } else {
+                    encryptedData.clear(index + i);
+                }
+            }
         }
         return encryptedData;
     }
 
-    public byte[] decrypt(byte[] encryptedData, byte[] key1, byte[] key2, byte[] key3) {
-        byte[] decryptedData = new byte[encryptedData.length];
-        int index = 0;
-        while (index < encryptedData.length) {
-            byte[] block = Arrays.copyOfRange(encryptedData, index, index + blockSize);
-            processBlock(block, key1, key2, key3, false);
-            System.arraycopy(block, 0, decryptedData, index, blockSize);
-            index += blockSize;
+    public BitSet decrypt(BitSet encryptedData, BitSet key1, BitSet key2, BitSet key3) {
+        BitSet decryptedData = new BitSet(encryptedData.length());
+        for (int index = 0; index < encryptedData.length(); index += blockSize) {
+            BitSet block = encryptedData.get(index, index + blockSize);
+            block = processBlock(block, key1, key2, key3, false);
+            for (int i = 0; i < blockSize; i++) {
+                if (block.get(i)) {
+                    decryptedData.set(index + i);
+                } else {
+                    decryptedData.clear(index + i);
+                }
+            }
         }
-        int paddingLength = decryptedData[decryptedData.length - 1];
-        return Arrays.copyOfRange(decryptedData, 0, decryptedData.length - paddingLength);
+        int originalLength = decryptedData.length();
+        while (originalLength > 0 && !decryptedData.get(originalLength - 1)) {
+            originalLength--;
+        }
+        return decryptedData.get(0, originalLength);
     }
 }
