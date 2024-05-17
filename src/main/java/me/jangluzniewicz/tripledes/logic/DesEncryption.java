@@ -3,26 +3,28 @@ package me.jangluzniewicz.tripledes.logic;
 import java.util.BitSet;
 
 public class DesEncryption implements EncryptionInterface {
-    private static final int[] shiftTable = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+    private static final int[] SHIFT_TABLE = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
     private static BitSet[] getKeysArray(BitSet key) {
         BitSet[] keyArray = Permutations.permutedChoice1(key);
-        BitSet[] shifted = new BitSet[16];
         BitSet[] permutedChoice2 = new BitSet[16];
+        BitSet left = keyArray[0];
+        BitSet right = keyArray[1];
+
         for (int i = 0; i < 16; i++) {
-            keyArray[0] = Transformations.leftShift(keyArray[0], shiftTable[i]);
-            keyArray[1] = Transformations.leftShift(keyArray[1], shiftTable[i]);
-            shifted[i] = Transformations.arrayCombine((BitSet) keyArray[0].clone(), (BitSet) keyArray[1].clone());
-            permutedChoice2[i] = Permutations.permutedChoice2(shifted[i]);
+            left = Transformations.leftShift(left, SHIFT_TABLE[i]);
+            right = Transformations.leftShift(right, SHIFT_TABLE[i]);
+            BitSet combined = Transformations.arrayCombine(left, right);
+            permutedChoice2[i] = Permutations.permutedChoice2(combined);
         }
         return permutedChoice2;
     }
 
     private static BitSet function(BitSet input, BitSet key) {
-        input = Permutations.extensionPermutation(input);
-        input = Transformations.xor(input, key);
-        input = Permutations.sBoxSubstitution(input);
-        return Permutations.pBoxPermutation(input);
+        BitSet expanded = Permutations.extensionPermutation(input);
+        BitSet xored = Transformations.xor(expanded, key);
+        BitSet substituted = Permutations.sBoxSubstitution(xored);
+        return Permutations.pBoxPermutation(substituted);
     }
 
     @Override
@@ -31,8 +33,9 @@ public class DesEncryption implements EncryptionInterface {
         BitSet left = inputArray[0];
         BitSet right = inputArray[1];
         BitSet[] keysArray = getKeysArray(key);
+
         for (int i = 0; i < 16; i++) {
-            BitSet temp = (BitSet) right.clone();
+            BitSet temp = right;
             right = Transformations.xor(left, function(right, keysArray[i]));
             left = temp;
         }
@@ -45,8 +48,9 @@ public class DesEncryption implements EncryptionInterface {
         BitSet left = inputArray[0];
         BitSet right = inputArray[1];
         BitSet[] keysArray = getKeysArray(key);
+
         for (int i = 15; i >= 0; i--) {
-            BitSet temp = (BitSet) left.clone();
+            BitSet temp = left;
             left = Transformations.xor(right, function(left, keysArray[i]));
             right = temp;
         }

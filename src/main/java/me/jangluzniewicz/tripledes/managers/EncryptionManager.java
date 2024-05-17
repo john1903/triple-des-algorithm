@@ -3,14 +3,14 @@ package me.jangluzniewicz.tripledes.managers;
 import me.jangluzniewicz.tripledes.logic.EncryptionInterface;
 
 import java.util.BitSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
 public class EncryptionManager {
     private final EncryptionInterface encryptor;
     private final int blockSize = 64;
-    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public EncryptionManager(EncryptionInterface encryptor) {
         this.encryptor = encryptor;
@@ -29,67 +29,51 @@ public class EncryptionManager {
         return block;
     }
 
-    public BitSet encrypt(BitSet data, BitSet key1, BitSet key2, BitSet key3) throws
-            InterruptedException, ExecutionException {
+    public BitSet encrypt(BitSet data, BitSet key1, BitSet key2, BitSet key3) throws InterruptedException, ExecutionException {
         int length = data.length();
-        int paddingLength = blockSize - (length % blockSize);
-        if (paddingLength == blockSize) {
-            paddingLength = 0;
-        }
+        int paddingLength = (blockSize - (length % blockSize)) % blockSize;
         BitSet paddedData = (BitSet) data.clone();
+
         for (int i = 0; i < paddingLength; i++) {
-            paddedData.clear(length + i);
+            paddedData.set(length + i, false);
         }
 
-        List<Future<BitSet>> futures = new ArrayList<>();
-        for (int index = 0; index < paddedData.length(); index += blockSize) {
-            final int blockIndex = index;
-            Future<BitSet> future = executor.submit(() -> {
-                BitSet block = paddedData.get(blockIndex, blockIndex + blockSize);
-                return processBlock(block, key1, key2, key3, true);
-            });
-            futures.add(future);
-        }
+        int totalBlocks = (paddedData.length() + blockSize - 1) / blockSize;
+        List<Future<BitSet>> futures = IntStream.range(0, totalBlocks).mapToObj(index -> executor.submit(() -> {
+            int blockIndex = index * blockSize;
+            BitSet block = paddedData.get(blockIndex, blockIndex + blockSize);
+            return processBlock(block, key1, key2, key3, true);
+        })).toList();
 
-        BitSet encryptedData = new BitSet(paddedData.length());
+        BitSet encryptedData = new BitSet(totalBlocks * blockSize);
         for (int i = 0; i < futures.size(); i++) {
             BitSet block = futures.get(i).get();
             int blockIndex = i * blockSize;
             for (int j = 0; j < blockSize; j++) {
-                if (block.get(j)) {
-                    encryptedData.set(blockIndex + j);
-                } else {
-                    encryptedData.clear(blockIndex + j);
-                }
+                encryptedData.set(blockIndex + j, block.get(j));
             }
         }
+
         return encryptedData;
     }
 
-    public BitSet decrypt(BitSet encryptedData, BitSet key1, BitSet key2, BitSet key3) throws
-            InterruptedException, ExecutionException {
-        List<Future<BitSet>> futures = new ArrayList<>();
-        for (int index = 0; index < encryptedData.length(); index += blockSize) {
-            final int blockIndex = index;
-            Future<BitSet> future = executor.submit(() -> {
-                BitSet block = encryptedData.get(blockIndex, blockIndex + blockSize);
-                return processBlock(block, key1, key2, key3, false);
-            });
-            futures.add(future);
-        }
+    public BitSet decrypt(BitSet encryptedData, BitSet key1, BitSet key2, BitSet key3) throws InterruptedException, ExecutionException {
+        int totalBlocks = (encryptedData.length() + blockSize - 1) / blockSize;
+        List<Future<BitSet>> futures = IntStream.range(0, totalBlocks).mapToObj(index -> executor.submit(() -> {
+            int blockIndex = index * blockSize;
+            BitSet block = encryptedData.get(blockIndex, blockIndex + blockSize);
+            return processBlock(block, key1, key2, key3, false);
+        })).toList();
 
-        BitSet decryptedData = new BitSet(encryptedData.length());
+        BitSet decryptedData = new BitSet(totalBlocks * blockSize);
         for (int i = 0; i < futures.size(); i++) {
             BitSet block = futures.get(i).get();
             int blockIndex = i * blockSize;
             for (int j = 0; j < blockSize; j++) {
-                if (block.get(j)) {
-                    decryptedData.set(blockIndex + j);
-                } else {
-                    decryptedData.clear(blockIndex + j);
-                }
+                decryptedData.set(blockIndex + j, block.get(j));
             }
         }
+
         int originalLength = decryptedData.length();
         while (originalLength > 0 && !decryptedData.get(originalLength - 1)) {
             originalLength--;
@@ -99,5 +83,13 @@ public class EncryptionManager {
 
     public void shutdown() {
         executor.shutdown();
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }

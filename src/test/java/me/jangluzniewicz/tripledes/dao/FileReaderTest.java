@@ -1,44 +1,68 @@
 package me.jangluzniewicz.tripledes.dao;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileReaderTest {
-    FileReader fileReader;
+    private FileReader fileReader;
+    private File tempFile;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         fileReader = new FileReader();
+        tempFile = File.createTempFile("testfile", ".tmp");
     }
 
-    @Test
-    void testRead() {
-        try {
-            byte[] content = fileReader.read("src/test/java/me/jangluzniewicz/tripledes/dao/java.png");
-            assertNotNull(content);
-            assertTrue(content.length > 0);
-        } catch (Exception e) {
-            fail("Error reading file: " + e.getMessage());
+    @AfterEach
+    void tearDown() {
+        if (tempFile.exists()) {
+            tempFile.delete();
         }
     }
 
     @Test
-    void testWrite() {
-        try {
-            byte[] content = fileReader.read("src/test/java/me/jangluzniewicz/tripledes/dao/java.png");
-            fileReader.write("src/test/java/me/jangluzniewicz/tripledes/dao/java_copy.png", content);
-            byte[] contentCopy = fileReader.read("src/test/java/me/jangluzniewicz/tripledes/dao/java_copy.png");
-            assertArrayEquals(content, contentCopy);
-            File fileCopy = new File("src/test/java/me/jangluzniewicz/tripledes/dao/java_copy.png");
-            if (fileCopy.exists()) {
-                fileCopy.delete();
-            }
-        } catch (Exception e) {
-            fail("Error writing file: " + e.getMessage());
-        }
+    void testRead() throws IOException {
+        byte[] expectedContent = "Hello, World!".getBytes();
+        Files.write(tempFile.toPath(), expectedContent);
+
+        byte[] actualContent = fileReader.read(tempFile.getAbsolutePath());
+
+        assertArrayEquals(expectedContent, actualContent);
+    }
+
+    @Test
+    void testWrite() throws IOException {
+        byte[] content = "Hello, World!".getBytes();
+
+        fileReader.write(tempFile.getAbsolutePath(), content);
+
+        byte[] actualContent = Files.readAllBytes(tempFile.toPath());
+
+        assertArrayEquals(content, actualContent);
+    }
+
+    @Test
+    void testReadNonExistentFile() {
+        assertThrows(IOException.class, () -> {
+            fileReader.read("non_existent_file.tmp");
+        });
+    }
+
+    @Test
+    void testWriteToNonWritableLocation() {
+        String path = "/non_writable_location/testfile.tmp";
+        byte[] content = "Hello, World!".getBytes();
+
+        assertThrows(IOException.class, () -> {
+            fileReader.write(path, content);
+        });
     }
 }

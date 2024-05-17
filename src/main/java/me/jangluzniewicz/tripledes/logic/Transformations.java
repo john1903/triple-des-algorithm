@@ -7,8 +7,7 @@ public class Transformations {
         int size = 28;
         BitSet shiftedBits = new BitSet(size);
         for (int i = 0; i < size; i++) {
-            boolean bit = bits.get((i + shift) % size);
-            shiftedBits.set(i, bit);
+            shiftedBits.set(i, bits.get((i + shift) % size));
         }
         return shiftedBits;
     }
@@ -24,17 +23,14 @@ public class Transformations {
     }
 
     public static BitSet arrayCombine(BitSet bitSet1, BitSet bitSet2) {
-        BitSet combinedBitSet = new BitSet(bitSet1.length() + bitSet2.length());
+        int len1 = bitSet1.length();
+        int len2 = bitSet2.length();
+        BitSet combinedBitSet = new BitSet(len1 + len2);
 
-        for (int i = 0; i < bitSet1.length(); i++) {
-            if (bitSet1.get(i)) {
-                combinedBitSet.set(i);
-            }
-        }
-
-        for (int i = 0; i < bitSet2.length(); i++) {
+        combinedBitSet.or(bitSet1);
+        for (int i = 0; i < len2; i++) {
             if (bitSet2.get(i)) {
-                combinedBitSet.set(bitSet1.length() + i);
+                combinedBitSet.set(len1 + i);
             }
         }
 

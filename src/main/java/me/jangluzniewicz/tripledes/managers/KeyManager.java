@@ -17,10 +17,11 @@ public class KeyManager {
 
     public String bitsToHexString(BitSet bits) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bits.length(); i += 8) {
+        int byteLength = (bits.length() + 7) / 8;
+        for (int i = 0; i < byteLength; i++) {
             byte b = 0;
             for (int j = 0; j < 8; j++) {
-                if (bits.get(i + j)) {
+                if (bits.get(i * 8 + j)) {
                     b |= (byte) (1 << (7 - j));
                 }
             }
@@ -34,9 +35,7 @@ public class KeyManager {
         for (int i = 0; i < hex.length(); i += 2) {
             byte b = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);
             for (int j = 0; j < 8; j++) {
-                if ((b & (1 << (7 - j))) > 0) {
-                    bits.set((i / 2) * 8 + j);
-                }
+                bits.set((i / 2) * 8 + j, (b & (1 << (7 - j))) != 0);
             }
         }
         return bits;

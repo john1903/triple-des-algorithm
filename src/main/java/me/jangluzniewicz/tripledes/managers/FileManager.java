@@ -27,16 +27,18 @@ public class FileManager {
 
     private BitSet fromByteArray(byte[] bytes) {
         BitSet bits = new BitSet(bytes.length * 8);
-        for (int i = 0; i < bytes.length * 8; i++) {
-            if ((bytes[i / 8] & (1 << (7 - (i % 8)))) > 0) {
-                bits.set(i);
+        int bitIndex = 0;
+        for (byte b : bytes) {
+            for (int i = 7; i >= 0; i--) {
+                bits.set(bitIndex++, (b & (1 << i)) != 0);
             }
         }
         return bits;
     }
 
     private byte[] toByteArray(BitSet bits) {
-        byte[] bytes = new byte[bits.length() / 8 + (bits.length() % 8 == 0 ? 0 : 1)];
+        int byteLength = (bits.length() + 7) / 8;
+        byte[] bytes = new byte[byteLength];
         for (int i = 0; i < bits.length(); i++) {
             if (bits.get(i)) {
                 bytes[i / 8] |= (byte) (1 << (7 - (i % 8)));
