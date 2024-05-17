@@ -2,7 +2,13 @@ package me.jangluzniewicz.tripledes.logic;
 
 import java.util.BitSet;
 
+/**
+ * The Permutations class contains various methods for performing specific permutations
+ * used in the DES (Data Encryption Standard) and 3DES (Triple DES) algorithms.
+ */
 public class Permutations {
+
+    // Initial permutation table
     private static final int[] initialPermutationTable = {
             58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
@@ -14,6 +20,7 @@ public class Permutations {
             63, 55, 47, 39, 31, 23, 15, 7
     };
 
+    // Final permutation table
     private static final int[] finalPermutationTable = {
             40, 8, 48, 16, 56, 24, 64, 32,
             39, 7, 47, 15, 55, 23, 63, 31,
@@ -25,6 +32,7 @@ public class Permutations {
             33, 1, 41, 9, 49, 17, 57, 25
     };
 
+    // Permuted choice 1 table
     private static final int[] permutedChoice1Table = {
             57, 49, 41, 33, 25, 17, 9, 1,
             58, 50, 42, 34, 26, 18, 10, 2,
@@ -35,6 +43,7 @@ public class Permutations {
             29, 21, 13, 5, 28, 20, 12, 4
     };
 
+    // Permuted choice 2 table
     private static final int[] permutedChoice2Table = {
             14, 17, 11, 24, 1, 5, 3, 28,
             15, 6, 21, 10, 23, 19, 12, 4,
@@ -44,6 +53,7 @@ public class Permutations {
             34, 53, 46, 42, 50, 36, 29, 32
     };
 
+    // Extension table
     private static final int[] extensionTable = {
             32, 1, 2, 3, 4, 5, 4, 5,
             6, 7, 8, 9, 8, 9, 10, 11,
@@ -53,6 +63,7 @@ public class Permutations {
             28, 29, 28, 29, 30, 31, 32, 1
     };
 
+    // S-boxes
     private static final int[][][] sTables = {
             {
                     {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -104,6 +115,7 @@ public class Permutations {
             }
     };
 
+    // P-box permutation table
     private static final int[] pTable = {
             16, 7, 20, 21, 29, 12, 28, 17,
             1, 15, 23, 26, 5, 18, 31, 10,
@@ -111,6 +123,12 @@ public class Permutations {
             19, 13, 30, 6, 22, 11, 4, 25
     };
 
+    /**
+     * Performs the initial permutation on the input BitSet according to the initialPermutationTable.
+     *
+     * @param input the input BitSet to be permuted
+     * @return an array of two BitSets, representing the left and right halves after permutation
+     */
     public static BitSet[] initialPermutation(BitSet input) {
         BitSet bitSet = new BitSet(64);
         for (int i = 0; i < 64; i++) {
@@ -121,6 +139,13 @@ public class Permutations {
         return new BitSet[]{left, right};
     }
 
+    /**
+     * Combines the left and right BitSets and performs the final permutation according to the finalPermutationTable.
+     *
+     * @param left the left half BitSet
+     * @param right the right half BitSet
+     * @return the permuted BitSet after final permutation
+     */
     public static BitSet finalPermutation(BitSet left, BitSet right) {
         BitSet combined = new BitSet(64);
         for (int i = 0; i < 32; i++) {
@@ -134,6 +159,12 @@ public class Permutations {
         return output;
     }
 
+    /**
+     * Performs the permuted choice 1 on the key BitSet according to the permutedChoice1Table.
+     *
+     * @param key the key BitSet to be permuted
+     * @return an array of two BitSets, representing the left and right halves after permutation
+     */
     public static BitSet[] permutedChoice1(BitSet key) {
         BitSet permutedBits = new BitSet(56);
         for (int i = 0; i < 56; i++) {
@@ -144,6 +175,12 @@ public class Permutations {
         return new BitSet[]{left, right};
     }
 
+    /**
+     * Performs the permuted choice 2 on the key BitSet according to the permutedChoice2Table.
+     *
+     * @param key the key BitSet to be permuted
+     * @return the permuted key BitSet
+     */
     public static BitSet permutedChoice2(BitSet key) {
         BitSet permutedKey = new BitSet(48);
         for (int i = 0; i < 48; i++) {
@@ -152,6 +189,12 @@ public class Permutations {
         return permutedKey;
     }
 
+    /**
+     * Performs the extension permutation on the input BitSet according to the extensionTable.
+     *
+     * @param input the input BitSet to be permuted
+     * @return the expanded BitSet after extension permutation
+     */
     public static BitSet extensionPermutation(BitSet input) {
         BitSet expandedTable = new BitSet(48);
         for (int i = 0; i < 48; i++) {
@@ -160,6 +203,12 @@ public class Permutations {
         return expandedTable;
     }
 
+    /**
+     * Performs S-box substitution on the input BitSet.
+     *
+     * @param input the input BitSet to be substituted
+     * @return the output BitSet after S-box substitution
+     */
     public static BitSet sBoxSubstitution(BitSet input) {
         BitSet output = new BitSet(32);
         for (int i = 0; i < 8; i++) {
@@ -176,6 +225,12 @@ public class Permutations {
         return output;
     }
 
+    /**
+     * Performs the P-box permutation on the input BitSet according to the pTable.
+     *
+     * @param input the input BitSet to be permuted
+     * @return the permuted BitSet after P-box permutation
+     */
     public static BitSet pBoxPermutation(BitSet input) {
         BitSet output = new BitSet(32);
         for (int i = 0; i < 32; i++) {

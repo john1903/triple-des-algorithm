@@ -20,20 +20,27 @@ import me.jangluzniewicz.tripledes.managers.KeyManager;
 import java.io.File;
 import java.util.BitSet;
 
+/**
+ * The GUIController class handles the interactions between the GUI components and the backend logic
+ * for file encryption and decryption using the Triple DES (3DES) algorithm.
+ */
 public class GUIController {
     @FXML
-    private TextField filePathTextField;
+    private TextField filePathTextField; // TextField for displaying and entering file path
     @FXML
-    private TextField key1;
+    private TextField key1; // TextField for the first encryption key
     @FXML
-    private TextField key2;
+    private TextField key2; // TextField for the second encryption key
     @FXML
-    private TextField key3;
+    private TextField key3; // TextField for the third encryption key
 
-    private FileManager fileManager;
-    private KeyManager keyManager;
-    private EncryptionManager encryptionManager;
+    private FileManager fileManager; // Manages file reading and writing operations
+    private KeyManager keyManager; // Manages key generation and conversion
+    private EncryptionManager encryptionManager; // Manages encryption and decryption processes
 
+    /**
+     * Initializes the controller, setting up key managers and adding validation to the key fields.
+     */
     @FXML
     public void initialize() {
         keyManager = new KeyManager(new KeyGenerator());
@@ -45,6 +52,11 @@ public class GUIController {
         addKeyValidation(key3);
     }
 
+    /**
+     * Handles drag over event on the file path TextField.
+     *
+     * @param event the drag event
+     */
     @FXML
     public void onDragOverFilePath(DragEvent event) {
         if (event.getGestureSource() != filePathTextField && event.getDragboard().hasFiles()) {
@@ -53,6 +65,11 @@ public class GUIController {
         event.consume();
     }
 
+    /**
+     * Handles drag dropped event on the file path TextField.
+     *
+     * @param event the drag event
+     */
     @FXML
     public void onDragDroppedFilePath(DragEvent event) {
         if (event.getGestureSource() != filePathTextField && event.getDragboard().hasFiles()) {
@@ -65,6 +82,13 @@ public class GUIController {
         event.consume();
     }
 
+    /**
+     * Validates the given TextField, checking if it is empty and updating its style and prompt text accordingly.
+     *
+     * @param textField the TextField to be validated
+     * @param promptText the original prompt text to be restored
+     * @return true if the TextField is invalid (empty), false otherwise
+     */
     private boolean validateTextField(TextField textField, String promptText) {
         if (textField.getText().isEmpty()) {
             textField.getStyleClass().add("text-field-error");
@@ -82,6 +106,13 @@ public class GUIController {
         }
     }
 
+    /**
+     * Shows an alert message with the given parameters.
+     *
+     * @param message the message to be displayed
+     * @param title the title of the alert
+     * @param type the type of the alert
+     */
     private void showMessage(String message, String title, Alert.AlertType type) {
         if (message != null && !message.isEmpty()) {
             Alert alert = new Alert(type);
@@ -92,6 +123,13 @@ public class GUIController {
         }
     }
 
+    /**
+     * Shows a save file dialog with the given title and initial file name.
+     *
+     * @param title the title of the file dialog
+     * @param initialFileName the initial file name
+     * @return the selected file, or null if no file was selected
+     */
     private File showSaveFileDialog(String title, String initialFileName) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
@@ -99,6 +137,11 @@ public class GUIController {
         return fileChooser.showSaveDialog(null);
     }
 
+    /**
+     * Adds validation to a key TextField to ensure it only contains valid hexadecimal characters and is of correct length.
+     *
+     * @param keyField the key TextField to add validation to
+     */
     private void addKeyValidation(TextField keyField) {
         ChangeListener<String> listener = (observable, oldValue, newValue) -> {
             if (newValue.length() > 32) {
@@ -112,6 +155,11 @@ public class GUIController {
         keyField.getProperties().put("listener", listener);
     }
 
+    /**
+     * Removes the validation from a key TextField.
+     *
+     * @param keyField the key TextField to remove validation from
+     */
     private void removeKeyValidation(TextField keyField) {
         ChangeListener<String> listener = (ChangeListener<String>) keyField.getProperties().get("listener");
         if (listener != null) {
@@ -119,6 +167,9 @@ public class GUIController {
         }
     }
 
+    /**
+     * Encrypts the file specified in the file path TextField using the keys provided in the key TextFields.
+     */
     @FXML
     public void encryptFile() {
         if (isInvalidInput()) {
@@ -144,6 +195,9 @@ public class GUIController {
         }
     }
 
+    /**
+     * Decrypts the file specified in the file path TextField using the keys provided in the key TextFields.
+     */
     @FXML
     public void decryptFile() {
         if (isInvalidInput()) {
@@ -169,6 +223,9 @@ public class GUIController {
         }
     }
 
+    /**
+     * Generates three keys and writes them to a file.
+     */
     @FXML
     public void generateKeys() {
         File saveFile = showSaveFileDialog("Save Generated Keys", "keys.txt");
@@ -201,6 +258,12 @@ public class GUIController {
         }
     }
 
+    /**
+     * Retrieves the file extension from a file path.
+     *
+     * @param filePath the file path
+     * @return the file extension, or an empty string if none is found
+     */
     private String getFileExtension(String filePath) {
         int dotIndex = filePath.lastIndexOf('.');
         if (dotIndex > 0 && dotIndex < filePath.length() - 1) {
@@ -209,6 +272,9 @@ public class GUIController {
         return "";
     }
 
+    /**
+     * Opens a file chooser dialog for selecting a data file and sets the file path TextField with the chosen file path.
+     */
     @FXML
     void readDataFile() {
         FileChooser fileChooser = new FileChooser();
@@ -219,10 +285,21 @@ public class GUIController {
         }
     }
 
+    /**
+     * Validates if a key is a valid 16-character hexadecimal string.
+     *
+     * @param key the key to be validated
+     * @return true if the key is valid, false otherwise
+     */
     private boolean isValidHexKey(String key) {
         return key != null && key.length() == 32 && key.matches("[0-9a-f]{32}");
     }
 
+    /**
+     * Checks if the input fields are invalid and shows appropriate error messages.
+     *
+     * @return true if any input field is invalid, false otherwise
+     */
     private boolean isInvalidInput() {
         if (validateTextField(filePathTextField, "Enter file path") ||
                 validateTextField(key1, "First key") || validateTextField(key2, "Second key") ||

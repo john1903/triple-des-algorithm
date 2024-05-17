@@ -4,17 +4,37 @@ import me.jangluzniewicz.tripledes.logic.KeyGeneratorInterface;
 
 import java.util.BitSet;
 
+/**
+ * The KeyManager class provides methods for key generation and conversion between
+ * BitSet and hexadecimal string representations.
+ */
 public class KeyManager {
-    private final KeyGeneratorInterface generator;
+    private final KeyGeneratorInterface generator; // Key generator interface
 
+    /**
+     * Constructs a KeyManager with the given KeyGeneratorInterface implementation.
+     *
+     * @param generator the KeyGeneratorInterface implementation
+     */
     public KeyManager(KeyGeneratorInterface generator) {
         this.generator = generator;
     }
 
+    /**
+     * Generates a key using the provided KeyGeneratorInterface implementation.
+     *
+     * @return a BitSet representing the generated key
+     */
     public BitSet generateKey() {
         return generator.generateKey();
     }
 
+    /**
+     * Converts a BitSet to its hexadecimal string representation.
+     *
+     * @param bits the BitSet to be converted
+     * @return a hexadecimal string representing the BitSet
+     */
     public String bitsToHexString(BitSet bits) {
         StringBuilder sb = new StringBuilder();
         int byteLength = (bits.length() + 7) / 8;
@@ -30,6 +50,12 @@ public class KeyManager {
         return sb.toString();
     }
 
+    /**
+     * Converts a hexadecimal string to a BitSet.
+     *
+     * @param hex the hexadecimal string to be converted
+     * @return a BitSet representing the hexadecimal string
+     */
     public BitSet hexStringToBitSet(String hex) {
         BitSet bits = new BitSet(hex.length() * 4);
         for (int i = 0; i < hex.length(); i += 2) {
