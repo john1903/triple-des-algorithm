@@ -63,9 +63,6 @@
                 <executions>
                     <execution>
                         <id>default-cli</id>
-                        <goals>
-                            <goal>jlink</goal>
-                        </goals>
                         <configuration>
                             <mainClass>me.jangluzniewicz.tripledes.gui.GUI</mainClass>
                             <launcher>app</launcher>
