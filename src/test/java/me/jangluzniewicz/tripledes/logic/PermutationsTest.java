@@ -7,31 +7,20 @@ import java.util.BitSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PermutationsTest {
-
-    private BitSet createBitSet(int... bits) {
-        BitSet bitSet = new BitSet(bits.length);
-        for (int i = 0; i < bits.length; i++) {
-            if (bits[i] == 1) {
-                bitSet.set(i);
-            }
-        }
-        return bitSet;
-    }
-
     @Test
     void initialPermutation() {
-        BitSet input = createBitSet(
+        BitSet input = Transformations.createBitSet(
                 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1,
                 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1,
                 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1,
                 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1
         );
 
-        BitSet expectedLeft = createBitSet(
+        BitSet expectedLeft = Transformations.createBitSet(
                 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1
         );
-        BitSet expectedRight = createBitSet(
+        BitSet expectedRight = Transformations.createBitSet(
                 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0
         );
@@ -44,13 +33,13 @@ class PermutationsTest {
 
     @Test
     void finalPermutation() {
-        BitSet left = createBitSet(
+        BitSet left = Transformations.createBitSet(
                 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1
         );
-        BitSet right = createBitSet(
+        BitSet right = Transformations.createBitSet(
                 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0
         );
-        BitSet expected = createBitSet(
+        BitSet expected = Transformations.createBitSet(
                 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0,
                 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1
         );
@@ -62,14 +51,14 @@ class PermutationsTest {
 
     @Test
     void permutedChoice1Test() {
-        BitSet key = createBitSet(
+        BitSet key = Transformations.createBitSet(
                 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1,
                 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1
         );
-        BitSet expectedLeft = createBitSet(
+        BitSet expectedLeft = Transformations.createBitSet(
                 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1
         );
-        BitSet expectedRight = createBitSet(
+        BitSet expectedRight = Transformations.createBitSet(
                 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1
         );
 
@@ -81,11 +70,11 @@ class PermutationsTest {
 
     @Test
     void permutedChoice2Test() {
-        BitSet keyLeft = createBitSet(
+        BitSet keyLeft = Transformations.createBitSet(
                 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1,
                 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1
         );
-        BitSet keyRight = createBitSet(
+        BitSet keyRight = Transformations.createBitSet(
                 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0,
                 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0
         );
@@ -96,7 +85,7 @@ class PermutationsTest {
             key.set(i + 28, keyRight.get(i));
         }
 
-        BitSet expected = createBitSet(
+        BitSet expected = Transformations.createBitSet(
                 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0,
                 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
                 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0
@@ -109,11 +98,11 @@ class PermutationsTest {
 
     @Test
     void expansionPermutation() {
-        BitSet input = createBitSet(
+        BitSet input = Transformations.createBitSet(
                 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0
         );
-        BitSet expected = createBitSet(
+        BitSet expected = Transformations.createBitSet(
                 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1,
                 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0,
                 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1
@@ -126,12 +115,12 @@ class PermutationsTest {
 
     @Test
     void sBoxPermutation() {
-        BitSet input = createBitSet(
+        BitSet input = Transformations.createBitSet(
                 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1,
                 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0,
                 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1
         );
-        BitSet expected = createBitSet(
+        BitSet expected = Transformations.createBitSet(
                 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
                 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1
         );
@@ -143,11 +132,11 @@ class PermutationsTest {
 
     @Test
     void pTable() {
-        BitSet input = createBitSet(
+        BitSet input = Transformations.createBitSet(
                 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
                 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1
         );
-        BitSet expected = createBitSet(
+        BitSet expected = Transformations.createBitSet(
                 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0,
                 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1
         );

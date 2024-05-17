@@ -13,6 +13,16 @@ public class Transformations {
         return shiftedBits;
     }
 
+    public static BitSet createBitSet(int... bits) {
+        BitSet bitSet = new BitSet(bits.length);
+        for (int i = 0; i < bits.length; i++) {
+            if (bits[i] == 1) {
+                bitSet.set(i);
+            }
+        }
+        return bitSet;
+    }
+
     public static BitSet arrayCombine(BitSet bitSet1, BitSet bitSet2) {
         BitSet combinedBitSet = new BitSet(bitSet1.length() + bitSet2.length());
 
