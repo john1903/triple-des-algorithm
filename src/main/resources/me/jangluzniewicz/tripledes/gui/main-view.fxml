@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="300.0" prefWidth="600.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.jangluzniewicz.tripledes.gui.MainController">
+    <stylesheets>
+        <URL value="@style.css" />
+    </stylesheets>
+
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+    </padding>
+
+    <Label styleClass="title-label" text="File Encryption and Decryption" />
+
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="encryptButton" onAction="#encryptFile" styleClass="action-button" text="Encrypt File" />
+        <Button fx:id="decryptButton" onAction="#decryptFile" styleClass="action-button" text="Decrypt File" />
+        <Button fx:id="generateKeysButton" onAction="#generateKeys" styleClass="action-button" text="Generate Keys" />
+    </HBox>
+
+    <VBox alignment="CENTER" spacing="10">
+        <Label styleClass="info-label" text="Enter file path:" />
+        <HBox alignment="CENTER" spacing="5">
+            <TextField fx:id="filePathTextField" onDragDropped="#onDragDroppedFilePath" onDragOver="#onDragOverFilePath" prefWidth="450.0" promptText="Enter file path" styleClass="text-field" />
+            <Button fx:id="chooseFileButton" minHeight="30" minWidth="30" onAction="#readDataFile" prefHeight="30.0" prefWidth="30.0" styleClass="file-button" text="..." />
+        </HBox>
+    </VBox>
+
+    <VBox alignment="CENTER" spacing="10">
+        <Label styleClass="info-label" text="Enter 32 characters keys in hex:" />
+        <HBox alignment="CENTER" spacing="5">
+            <TextField fx:id="key1" prefWidth="150.0" promptText="First key" styleClass="text-field" />
+            <TextField fx:id="key2" prefWidth="150.0" promptText="Second key" styleClass="text-field" />
+            <TextField fx:id="key3" prefWidth="150.0" promptText="Third key" styleClass="text-field" />
+        </HBox>
+    </VBox>
+</VBox>

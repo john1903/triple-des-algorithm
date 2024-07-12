@@ -1,5 +1,7 @@
 package me.jangluzniewicz.tripledes.gui;
 
+import javafx.concurrent.Task;
+import javafx.scene.control.Button;
 import me.jangluzniewicz.tripledes.dao.FileReader;
 import me.jangluzniewicz.tripledes.logic.DesEncryption;
 import me.jangluzniewicz.tripledes.logic.KeyGenerator;
@@ -21,10 +23,10 @@ import java.io.File;
 import java.util.BitSet;
 
 /**
- * The GUIController class handles the interactions between the GUI components and the backend logic
+ * The MainController class handles the interactions between the MainWindow components and the backend logic
  * for file encryption and decryption using the Triple DES (3DES) algorithm.
  */
-public class GUIController {
+public class MainController {
     @FXML
     private TextField filePathTextField; // TextField for displaying and entering file path
     @FXML
@@ -33,6 +35,14 @@ public class GUIController {
     private TextField key2; // TextField for the second encryption key
     @FXML
     private TextField key3; // TextField for the third encryption key
+    @FXML
+    private Button encryptButton; // Button for encrypting the file
+    @FXML
+    private Button decryptButton; // Button for decrypting the file
+    @FXML
+    private Button generateKeysButton; // Button for generating encryption keys
+    @FXML
+    private Button chooseFileButton; // Button for choosing a file to encrypt/decrypt
 
     private FileManager fileManager; // Manages file reading and writing operations
     private KeyManager keyManager; // Manages key generation and conversion
@@ -167,6 +177,17 @@ public class GUIController {
         }
     }
 
+    private void setUIElementsDisabled(boolean disabled) {
+        encryptButton.setDisable(disabled);
+        decryptButton.setDisable(disabled);
+        generateKeysButton.setDisable(disabled);
+        chooseFileButton.setDisable(disabled);
+        filePathTextField.setDisable(disabled);
+        key1.setDisable(disabled);
+        key2.setDisable(disabled);
+        key3.setDisable(disabled);
+    }
+
     /**
      * Encrypts the file specified in the file path TextField using the keys provided in the key TextFields.
      */
@@ -184,15 +205,34 @@ public class GUIController {
             return;
         }
 
-        try {
-            BitSet fileContent = fileManager.read(inputFilePath);
-            fileContent = encryptionManager.encrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
-                    keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
-            fileManager.write(saveFile.getAbsolutePath(), fileContent);
+        Task<Boolean> encryptTask = new Task<>() {
+            @Override
+            protected Boolean call() throws Exception {
+                setUIElementsDisabled(true);
+                BitSet fileContent = fileManager.read(inputFilePath);
+                fileContent = encryptionManager.encrypt(fileContent,
+                        keyManager.hexStringToBitSet(key1.getText()),
+                        keyManager.hexStringToBitSet(key2.getText()),
+                        keyManager.hexStringToBitSet(key3.getText()));
+                fileManager.write(saveFile.getAbsolutePath(), fileContent);
+                return true;
+            }
+        };
+
+        encryptTask.setOnSucceeded(event -> {
+            setUIElementsDisabled(false);
             showMessage("Encrypting successful!", "Success", Alert.AlertType.INFORMATION);
-        } catch (Exception e) {
-            showMessage("Error processing file: " + e.getMessage(), "Error", Alert.AlertType.ERROR);
-        }
+        });
+
+        encryptTask.setOnFailed(event -> {
+            Throwable exception = encryptTask.getException();
+            setUIElementsDisabled(false);
+            showMessage("Error encrypting file: " + exception.getMessage(), "Error", Alert.AlertType.ERROR);
+        });
+
+        Thread encryptThread = new Thread(encryptTask);
+        encryptThread.setDaemon(true);
+        encryptThread.start();
     }
 
     /**
@@ -212,15 +252,34 @@ public class GUIController {
             return;
         }
 
-        try {
-            BitSet fileContent = fileManager.read(inputFilePath);
-            fileContent = encryptionManager.decrypt(fileContent, keyManager.hexStringToBitSet(key1.getText()),
-                    keyManager.hexStringToBitSet(key2.getText()), keyManager.hexStringToBitSet(key3.getText()));
-            fileManager.write(saveFile.getAbsolutePath(), fileContent);
+        Task<Boolean> decryptTask = new Task<>() {
+            @Override
+            protected Boolean call() throws Exception {
+                setUIElementsDisabled(true);
+                BitSet fileContent = fileManager.read(inputFilePath);
+                fileContent = encryptionManager.decrypt(fileContent,
+                        keyManager.hexStringToBitSet(key1.getText()),
+                        keyManager.hexStringToBitSet(key2.getText()),
+                        keyManager.hexStringToBitSet(key3.getText()));
+                fileManager.write(saveFile.getAbsolutePath(), fileContent);
+                return true;
+            }
+        };
+
+        decryptTask.setOnSucceeded(event -> {
+            setUIElementsDisabled(false);
             showMessage("Decrypting successful!", "Success", Alert.AlertType.INFORMATION);
-        } catch (Exception e) {
-            showMessage("Error processing file: " + e.getMessage(), "Error", Alert.AlertType.ERROR);
-        }
+        });
+
+        decryptTask.setOnFailed(event -> {
+            Throwable exception = decryptTask.getException();
+            setUIElementsDisabled(false);
+            showMessage("Error decrypting file: " + exception.getMessage(), "Error", Alert.AlertType.ERROR);
+        });
+
+        Thread decryptThread = new Thread(decryptTask);
+        decryptThread.setDaemon(true);
+        decryptThread.start();
     }
 
     /**
@@ -292,7 +351,7 @@ public class GUIController {
      * @return true if the key is valid, false otherwise
      */
     private boolean isValidHexKey(String key) {
-        return key != null && key.length() == 32 && key.matches("[0-9a-f]{32}");
+        return key == null || key.length() != 32 || !key.matches("[0-9a-f]{32}");
     }
 
     /**
@@ -307,7 +366,7 @@ public class GUIController {
             return true;
         }
 
-        if (!isValidHexKey(key1.getText()) || !isValidHexKey(key2.getText()) || !isValidHexKey(key3.getText())) {
+        if (isValidHexKey(key1.getText()) || isValidHexKey(key2.getText()) || isValidHexKey(key3.getText())) {
             showMessage("Keys must be 16-character hexadecimal strings!", "Invalid Key", Alert.AlertType.ERROR);
             return true;
         }

@@ -8,9 +8,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * The GUI class serves as the entry point for the JavaFX application, setting up and displaying the main window.
+ * The MainWindow class serves as the entry point for the JavaFX application, setting up and displaying the main window.
  */
-public class GUI extends Application {
+public class MainWindow extends Application {
 
     /**
      * Starts the JavaFX application by setting up the main stage and loading the FXML layout.
@@ -20,7 +20,7 @@ public class GUI extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("GUI-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Encryption/Decryption Tool");
         stage.setScene(scene);
