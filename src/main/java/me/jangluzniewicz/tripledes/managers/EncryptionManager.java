@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class EncryptionManager {
     private final EncryptionInterface encryptor; // Encryption algorithm implementation
     private final int blockSize = 64; // Block size in bits
-    final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()); // Thread pool for parallel processing
+    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()); // Thread pool for parallel processing
 
     /**
      * Constructs an EncryptionManager with the given EncryptionInterface implementation.
@@ -130,12 +130,15 @@ public class EncryptionManager {
     public void shutdown() {
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
         } catch (InterruptedException e) {
             executor.shutdownNow();
             Thread.currentThread().interrupt();
+        }
+        finally {
+            executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         }
     }
 }

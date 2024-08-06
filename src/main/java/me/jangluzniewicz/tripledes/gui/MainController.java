@@ -222,12 +222,14 @@ public class MainController {
         encryptTask.setOnSucceeded(event -> {
             setUIElementsDisabled(false);
             showMessage("Encrypting successful!", "Success", Alert.AlertType.INFORMATION);
+            encryptionManager.shutdown();  // Shutdown executor service after encryption is done
         });
 
         encryptTask.setOnFailed(event -> {
             Throwable exception = encryptTask.getException();
             setUIElementsDisabled(false);
             showMessage("Error encrypting file: " + exception.getMessage(), "Error", Alert.AlertType.ERROR);
+            encryptionManager.shutdown();  // Ensure shutdown even on failure
         });
 
         Thread encryptThread = new Thread(encryptTask);
@@ -269,12 +271,14 @@ public class MainController {
         decryptTask.setOnSucceeded(event -> {
             setUIElementsDisabled(false);
             showMessage("Decrypting successful!", "Success", Alert.AlertType.INFORMATION);
+            encryptionManager.shutdown();  // Shutdown executor service after decryption is done
         });
 
         decryptTask.setOnFailed(event -> {
             Throwable exception = decryptTask.getException();
             setUIElementsDisabled(false);
             showMessage("Error decrypting file: " + exception.getMessage(), "Error", Alert.AlertType.ERROR);
+            encryptionManager.shutdown();  // Ensure shutdown even on failure
         });
 
         Thread decryptThread = new Thread(decryptTask);
