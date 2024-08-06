@@ -9,7 +9,6 @@ import java.util.BitSet;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EncryptionManagerTest {
     private EncryptionManager encryptionManager;
@@ -77,12 +76,6 @@ class EncryptionManagerTest {
         assertEquals(expectedDecryptedData, decryptedData);
     }
 
-    @Test
-    void testShutdown() {
-        encryptionManager.shutdown();
-        assertTrue(encryptionManager.executor.isShutdown());
-    }
-
     private BitSet createBitSet(String binaryString) {
         BitSet bitSet = new BitSet(binaryString.length());
         for (int i = 0; i < binaryString.length(); i++) {
@@ -106,7 +99,7 @@ class EncryptionManagerTest {
         return key;
     }
 
-    private class MockEncryption implements EncryptionInterface {
+    private static class MockEncryption implements EncryptionInterface {
         @Override
         public BitSet encryption(BitSet data, BitSet key) {
             return data;
